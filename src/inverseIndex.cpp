@@ -1,4 +1,5 @@
 #include "inverseIndex.hpp"
+#include <cctype>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -17,13 +18,18 @@ void InverseIndex::createIndex(const string &corpusDirName,
         ifstream document;
         document.open(doc);
         while (true) {
-            string str;
+            string str, term;
             document >> str;
+            for (const char c : str) {
+                if (isalnum(tolower(c))) term += c;
+            }
             if (document.eof()) break;
             if (isStopWord(str)) continue;
+            if (isStopWord(term)) continue;
             // Olha se o termo já está no índice
-            if (!isInIndex(str, i)) this->index[str].push_back(make_pair(i, 1));
-            else incrementInDoc(str, i);
+            if (!isInIndex(term, i))
+                this->index[term].push_back(make_pair(i, 1));
+            else incrementInDoc(term, i);
         }
         i++;
     }
