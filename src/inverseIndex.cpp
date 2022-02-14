@@ -17,20 +17,24 @@ void InverseIndex::createIndex(const string &corpusDirName,
     for (auto doc : documents) {
         ifstream document;
         document.open(doc);
+        // TODO: Checar se abriu corretamente
         while (true) {
             string str, term;
             document >> str;
             for (const char c : str) {
                 if (isalnum(tolower(c))) term += c;
             }
+            // TODO: Converter para lowercase
             if (document.eof()) break;
-            if (isStopWord(str)) continue;
+            // TODO: Checar FAIL
             if (isStopWord(term)) continue;
             // Olha se o termo já está no índice
             if (!isInIndex(term, i))
                 this->index[term].push_back(make_pair(i, 1));
             else incrementInDoc(term, i);
         }
+        document.close();
+        // TODO: Checar se fechou corretamente
         i++;
     }
 }
