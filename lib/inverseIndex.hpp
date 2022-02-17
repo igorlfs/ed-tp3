@@ -14,10 +14,11 @@ class InverseIndex {
     int countValidWords();
 
   private:
+    static constexpr int M = 100003;
     long long hash(const string &s);
+    LinkedList<pair<string, int>> index[M];
     LinkedList<string> stopWords;
     LinkedList<string> documents;
-    long long indexSize;
 
     void setStopWords(const string &stopWordsFileName);
     void setDocuments(const string &corpusDirName);

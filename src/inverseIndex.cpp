@@ -14,9 +14,6 @@ void InverseIndex::createIndex(const string &corpusDirName,
                                const string &stopWordsFileName) {
     setStopWords(stopWordsFileName);
     setDocuments(corpusDirName);
-    this->indexSize = 10 * countValidWords() + 1;
-    LinkedList<pair<string, int>> index[indexSize];
-
     Cell<string> *p = this->documents.getHead()->getNext();
     while (p != nullptr) {
         ifstream document;
@@ -66,36 +63,9 @@ void InverseIndex::setDocuments(const string &corpusDirName) {
         this->documents.insertEnd(entry.path());
 }
 
-int InverseIndex::countValidWords() {
-    Cell<string> *p = this->documents.getHead()->getNext();
-    LinkedList<string> uniqueWords;
-    int validWords = 0;
-
-    while (p != nullptr) {
-        ifstream document;
-        document.open(p->getItem());
-        // TODO: Checar se abriu corretamente
-        while (true) {
-            string str;
-            document >> str;
-            if (document.eof()) break;
-            // TODO: Checar FAIL
-            if (!this->stopWords.find(str) && !uniqueWords.find(str)) {
-                uniqueWords.insertBeg(str);
-                validWords++;
-            }
-        }
-        document.close();
-        // TODO: Checar se fechou corretamente
-        p = p->getNext();
-    }
-
-    return validWords;
-}
-
 long long InverseIndex::hash(const string &s) {
     const int p = 53;
-    const int m = this->indexSize;
+    const int m = this->M;
     long long hash_value = 0;
     long long p_pow = 1;
     for (char c : s) {
