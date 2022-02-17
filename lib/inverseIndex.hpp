@@ -21,7 +21,6 @@ class InverseIndex {
 
     void setStopWords(const string &stopWordsFileName);
     void setDocuments(const string &corpusDirName);
-    bool isInIndex(const int &pos, const string &id,
-                   LinkedList<pair<string, int>> *index);
-    void incrementInDoc(const string &id, LinkedList<pair<string, int>> &index);
+    bool isInIndex(const string &id, LinkedList<pair<string, int>> &list);
+    void incrementInDoc(const string &id, LinkedList<pair<string, int>> &list);
 };

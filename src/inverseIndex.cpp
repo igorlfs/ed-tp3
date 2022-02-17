@@ -32,7 +32,7 @@ InverseIndex::createIndex(const string &corpusDirName,
             // TODO: Checar FAIL
             if (this->stopWords.find(str)) continue;
             pos = hash(str);
-            if (!isInIndex(pos, documentName, index))
+            if (!isInIndex(documentName, index[pos]))
                 index[pos].insertEnd(make_pair(documentName, 1));
             else incrementInDoc(documentName, index[pos]);
         }
@@ -76,9 +76,9 @@ long long InverseIndex::hash(const string &s) {
     return hash_value;
 }
 
-bool InverseIndex::isInIndex(const int &pos, const string &id,
-                             LinkedList<pair<string, int>> *index) {
-    Cell<pair<string, int>> *p = index[pos].getHead()->getNext();
+bool InverseIndex::isInIndex(const string &id,
+                             LinkedList<pair<string, int>> &list) {
+    Cell<pair<string, int>> *p = list.getHead()->getNext();
 
     while (p != nullptr) {
         if (p->getItem().first == id) return true;
