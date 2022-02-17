@@ -2,7 +2,6 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <string.h>
 
 using std::cout; // Para depuração
 using std::endl;
