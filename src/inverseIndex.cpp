@@ -1,4 +1,5 @@
 #include "inverseIndex.hpp"
+#include <cmath>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -42,6 +43,29 @@ InverseIndex::createIndex(const string &corpusDirName,
         p = p->getNext();
     }
     return index;
+}
+
+void InverseIndex::calculateNormalizers() {
+    Cell<string> *p = this->documents.getHead()->getNext();
+    int D = this->documents.getSize();
+    while (p != nullptr) {
+        double weight = 0;
+        string documentName = p->getItem();
+        LinkedList<int> hashes;
+        for (int i = 0; i < M; ++i) {
+            if (isInIndex(documentName, index[i])) hashes.insertEnd(i);
+        }
+
+        Cell<int> *q = hashes.getHead()->getNext();
+        while (q != nullptr) {
+            int freqTerm = getFrequency(documentName, index[q->getItem()]);
+            double numDocsTerm = index[q->getItem()].getSize();
+            weight += freqTerm * log(D / numDocsTerm);
+            q = q->getNext();
+        }
+        this->documentsWeights.insertEnd(weight);
+        p = p->getNext();
+    }
 }
 
 void InverseIndex::setStopWords(const string &stopWordsFileName) {
@@ -98,4 +122,16 @@ void InverseIndex::incrementInDoc(const string &id,
         }
         p = p->getNext();
     }
+}
+
+int InverseIndex::getFrequency(const string &id,
+                               LinkedList<pair<string, int>> &list) {
+    Cell<pair<string, int>> *p = list.getHead()->getNext();
+    while (p != nullptr) {
+        if (p->item.first == id) {
+            return p->item.second;
+        }
+        p = p->getNext();
+    }
+    return -1;
 }

@@ -119,4 +119,6 @@ template <typename T> bool LinkedList<T>::find(const T &t) const {
 }
 
 template class LinkedList<string>;
+template class LinkedList<double>;
+template class LinkedList<int>;
 template class LinkedList<pair<string, int>>;
