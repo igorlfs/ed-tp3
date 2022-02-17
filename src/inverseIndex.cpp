@@ -10,8 +10,9 @@ using std::ifstream;
 using std::make_pair;
 namespace fs = std::filesystem;
 
-void InverseIndex::createIndex(const string &corpusDirName,
-                               const string &stopWordsFileName) {
+LinkedList<pair<string, int>> *
+InverseIndex::createIndex(const string &corpusDirName,
+                          const string &stopWordsFileName) {
     setStopWords(stopWordsFileName);
     setDocuments(corpusDirName);
     Cell<string> *p = this->documents.getHead()->getNext();
@@ -41,6 +42,7 @@ void InverseIndex::createIndex(const string &corpusDirName,
         // TODO: cálcula peso do documento
         p = p->getNext();
     }
+    return index;
 }
 
 void InverseIndex::setStopWords(const string &stopWordsFileName) {

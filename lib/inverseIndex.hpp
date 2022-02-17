@@ -9,9 +9,8 @@ using std::string;
 
 class InverseIndex {
   public:
-    void createIndex(const string &corpusDirName,
-                     const string &stopWordsFileName);
-    int countValidWords();
+    LinkedList<pair<string, int>> *createIndex(const string &corpusDirName,
+                                               const string &stopWordsFileName);
 
   private:
     static constexpr int M = 100003;
