@@ -1,12 +1,9 @@
 #pragma once
 
-#include <list>
-#include <map>
+#include "linkedList.hpp"
 #include <string>
 #include <utility>
 
-using std::list;
-using std::map;
 using std::pair;
 using std::string;
 
@@ -14,14 +11,17 @@ class InverseIndex {
   public:
     void createIndex(const string &corpusDirName,
                      const string &stopWordsFileName);
-    static list<string> getStopWords(const string &stopWordsFileName);
-    static list<string> getDocuments(const string &corpusDirName);
-    bool isStopWord(const string &term);
-    bool isInIndex(const string &term, const int &i);
-    void incrementInDoc(const string &term, const int &i);
+    int countValidWords();
 
   private:
-    map<string, list<pair<int, int>>> index;
-    list<string> stopWords;
-    list<string> documents;
+    long long hash(const string &s);
+    LinkedList<string> stopWords;
+    LinkedList<string> documents;
+    long long indexSize;
+
+    void setStopWords(const string &stopWordsFileName);
+    void setDocuments(const string &corpusDirName);
+    bool isInIndex(const int &pos, const string &id,
+                   LinkedList<pair<string, int>> *index);
+    void incrementInDoc(const string &id, LinkedList<pair<string, int>> &index);
 };
