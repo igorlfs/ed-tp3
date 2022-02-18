@@ -44,9 +44,10 @@ InverseIndex::createIndex(const string &corpusDirName,
     return index;
 }
 
-void InverseIndex::calculateNormalizers() {
+void InverseIndex::calculateNormalizers(double *documentWeights) {
     Cell<string> *p = this->documents.getHead()->getNext();
     const int D = this->numberOfDocuments;
+    int i = 0;
     while (p != nullptr) {
         double weight = 0;
         const string documentName = p->getItem();
@@ -63,7 +64,8 @@ void InverseIndex::calculateNormalizers() {
             q = q->getNext();
         }
         weight = sqrt(weight);
-        this->documentsWeights.insertEnd(weight);
+        documentWeights[i] = weight;
+        i++;
         p = p->getNext();
     }
 }
