@@ -18,7 +18,7 @@ InverseIndex::createIndex(const string &corpusDirName,
     Cell<string> *p = this->documents.getHead()->getNext();
     while (p != nullptr) {
         ifstream document;
-        string documentName = p->getItem();
+        const string documentName = p->getItem();
         // TODO: Checar se abriu corretamente
         document.open(documentName);
         while (true) {
@@ -47,10 +47,10 @@ InverseIndex::createIndex(const string &corpusDirName,
 
 void InverseIndex::calculateNormalizers() {
     Cell<string> *p = this->documents.getHead()->getNext();
-    int D = this->documents.getSize();
+    const int D = this->numberOfDocuments;
     while (p != nullptr) {
         double weight = 0;
-        string documentName = p->getItem();
+        const string documentName = p->getItem();
         LinkedList<int> hashes;
         for (int i = 0; i < M; ++i) {
             if (isInIndex(documentName, index[i])) hashes.insertEnd(i);
@@ -94,7 +94,7 @@ int InverseIndex::hash(const string &s) {
     const int m = this->M;
     int hash_value = 0;
     int p_pow = 1;
-    for (char c : s) {
+    for (const char c : s) {
         hash_value = (hash_value + (c - 'a' + 1) * p_pow) % m;
         p_pow = (p_pow * p) % m;
     }
