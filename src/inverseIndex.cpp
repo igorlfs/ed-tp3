@@ -5,11 +5,10 @@
 #include <fstream>
 #include <iostream>
 
-using std::cout; // Para depuração
-using std::endl;
+using std::distance;
 using std::ifstream;
 using std::make_pair;
-namespace fs = std::filesystem;
+using std::ofstream;
 
 LinkedList<pair<string, int>> *
 InverseIndex::createIndex(const string &corpusDirName,
@@ -155,4 +154,14 @@ void InverseIndex::calculateNormalizers(double *documentWeights) {
         p = p->getNext();
     }
 }
+
+void InverseIndex::print(const string &outputFileName,
+                         const string *documentIDs, const double *normQuery) {
+    ofstream outputFile;
+    outputFile.open(outputFileName);
+    for (int i = 0; i < this->numberOfDocuments; ++i) {
+        if (normQuery[i] <= 0 || i == 10) break;
+        outputFile << documentIDs[i] << ' ';
+    }
+    outputFile.put('\n');
 }
