@@ -44,32 +44,6 @@ InverseIndex::createIndex(const string &corpusDirName,
     return index;
 }
 
-void InverseIndex::calculateNormalizers(double *documentWeights) {
-    Cell<string> *p = this->documents.getHead()->getNext();
-    const int D = this->numberOfDocuments;
-    int i = 0;
-    while (p != nullptr) {
-        double weight = 0;
-        const string documentName = p->getItem();
-        LinkedList<int> hashes;
-        for (int i = 0; i < M; ++i) {
-            if (isInIndex(documentName, index[i])) hashes.insertEnd(i);
-        }
-
-        Cell<int> *q = hashes.getHead()->getNext();
-        while (q != nullptr) {
-            int freqTerm = getFrequency(documentName, index[q->getItem()]);
-            double numDocsTerm = index[q->getItem()].getSize();
-            weight += pow((freqTerm * log(D / numDocsTerm)), 2);
-            q = q->getNext();
-        }
-        weight = sqrt(weight);
-        documentWeights[i] = weight;
-        i++;
-        p = p->getNext();
-    }
-}
-
 int InverseIndex::getFrequency(const string &id,
                                LinkedList<pair<string, int>> &list) {
     Cell<pair<string, int>> *p = list.getHead()->getNext();
@@ -142,8 +116,29 @@ int InverseIndex::getFrequency(const string &id,
     while (p != nullptr) {
         if (p->item.first == id) {
             return p->item.second;
+void InverseIndex::calculateNormalizers(double *documentWeights) {
+    Cell<string> *p = this->documents.getHead()->getNext();
+    const int D = this->numberOfDocuments;
+    int i = 0;
+    while (p != nullptr) {
+        double weight = 0;
+        const string documentName = p->getItem();
+        LinkedList<int> hashes;
+        for (int i = 0; i < M; ++i) {
+            if (isInIndex(documentName, index[i])) hashes.insertEnd(i);
         }
+
+        Cell<int> *q = hashes.getHead()->getNext();
+        while (q != nullptr) {
+            int freqTerm = getFrequency(documentName, index[q->getItem()]);
+            double numDocsTerm = index[q->getItem()].getSize();
+            weight += pow((freqTerm * log(D / numDocsTerm)), 2);
+            q = q->getNext();
+        }
+        weight = sqrt(weight);
+        documentWeights[i] = weight;
+        i++;
         p = p->getNext();
     }
-    return -1;
+}
 }

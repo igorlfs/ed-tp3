@@ -25,7 +25,7 @@ class InverseIndex {
     void setStopWords(const string &stopWordsFileName);
     void setDocuments(const string &corpusDirName);
     int hash(const string &s);
-    void calculateNormalizers(double *documentWeights);
     bool isInIndex(const string &id, LinkedList<pair<string, int>> &list);
     void incrementInDoc(const string &id, LinkedList<pair<string, int>> &list);
+    void calculateNormalizers(double *documentWeights);
 };
