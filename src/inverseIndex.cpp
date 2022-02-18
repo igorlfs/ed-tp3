@@ -51,6 +51,7 @@ int InverseIndex::getFrequency(const string &id,
         if (p->item.first == id) return p->item.second;
         p = p->getNext();
     }
+    // Essa função só deve ser chamada quando é garantido que o id está na lista
     throw "Não deve chegar aqui";
 }
 
