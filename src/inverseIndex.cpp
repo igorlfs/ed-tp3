@@ -1,4 +1,5 @@
 #include "inverseIndex.hpp"
+#include "quickSort.hpp"
 #include <cmath>
 #include <filesystem>
 #include <fstream>
@@ -71,8 +72,20 @@ void InverseIndex::setStopWords(const string &stopWordsFileName) {
 }
 
 void InverseIndex::setDocuments(const string &corpusDirName) {
-    for (const auto &entry : fs::directory_iterator(corpusDirName))
-        this->documents.insertEnd(entry.path());
+    namespace fs = std::filesystem;
+    this->numberOfDocuments = distance(fs::directory_iterator(corpusDirName),
+                                       fs::directory_iterator{});
+    string docs[numberOfDocuments];
+    int i = 0;
+    for (const auto &entry : fs::directory_iterator(corpusDirName)) {
+        docs[i] = entry.path();
+        i++;
+    }
+    quickSort(docs, i);
+    for (int i = 0; i < this->numberOfDocuments; ++i) {
+        this->documents.insertEnd(docs[i]);
+    }
+}
 }
 
 int InverseIndex::hash(const string &s) {
