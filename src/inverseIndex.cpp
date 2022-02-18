@@ -89,11 +89,11 @@ void InverseIndex::setDocuments(const string &corpusDirName) {
         this->documents.insertEnd(entry.path());
 }
 
-long long InverseIndex::hash(const string &s) {
+int InverseIndex::hash(const string &s) {
     const int p = 53;
     const int m = this->M;
-    long long hash_value = 0;
-    long long p_pow = 1;
+    int hash_value = 0;
+    int p_pow = 1;
     for (char c : s) {
         hash_value = (hash_value + (c - 'a' + 1) * p_pow) % m;
         p_pow = (p_pow * p) % m;

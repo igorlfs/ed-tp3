@@ -24,6 +24,7 @@ class InverseIndex {
     int getFrequency(const string &id, LinkedList<pair<string, int>> &list);
     void setStopWords(const string &stopWordsFileName);
     void setDocuments(const string &corpusDirName);
+    int hash(const string &s);
     bool isInIndex(const string &id, LinkedList<pair<string, int>> &list);
     void incrementInDoc(const string &id, LinkedList<pair<string, int>> &list);
 };
