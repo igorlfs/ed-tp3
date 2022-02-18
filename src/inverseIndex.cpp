@@ -1,4 +1,5 @@
 #include "inverseIndex.hpp"
+#include "mergeSort.hpp"
 #include "quickSort.hpp"
 #include <cmath>
 #include <filesystem>
@@ -138,12 +139,51 @@ void InverseIndex::incrementInDoc(const string &id,
     }
 }
 
-int InverseIndex::getFrequency(const string &id,
-                               LinkedList<pair<string, int>> &list) {
-    Cell<pair<string, int>> *p = list.getHead()->getNext();
+void InverseIndex::process(const string &inputFileName,
+                           const string &outputFileName) {
+    setQuery(inputFileName);
+
+    const int D = this->numberOfDocuments;
+    string docsIds[D];
+    Cell<string> *r = this->documents.getHead()->getNext();
+    for (int i = 0; i < D; ++i, r = r->getNext()) {
+        docsIds[i] = r->getItem();
+    }
+
+    double documentWeights[D];
+    calculateNormalizers(documentWeights);
+    double normQuery[D];
+    memset(normQuery, 0, sizeof(normQuery));
+    Cell<string> *p = this->query.getHead()->getNext();
+
     while (p != nullptr) {
-        if (p->item.first == id) {
-            return p->item.second;
+        string term = p->getItem();
+        int pos = hash(term);
+        if (this->index[pos].empty()) {
+            p = p->getNext();
+            continue;
+        }
+        Cell<string> *q = this->documents.getHead()->getNext();
+        int i = 0;
+        while (q != nullptr) {
+            if (isInIndex(q->getItem(), this->index[pos])) {
+                int freqTerm = getFrequency(q->getItem(), index[pos]);
+                double numDocsTerm = index[pos].getSize();
+                double weight = freqTerm * log(D / numDocsTerm);
+                normQuery[i] += weight;
+            }
+            i++;
+            q = q->getNext();
+        }
+        p = p->getNext();
+    }
+    for (int i = 0; i < D; ++i) {
+        normQuery[i] = normQuery[i] / documentWeights[i];
+    }
+    mergeSort(normQuery, docsIds, 0, D - 1);
+    print(outputFileName, docsIds, normQuery);
+}
+
 void InverseIndex::calculateNormalizers(double *documentWeights) {
     Cell<string> *p = this->documents.getHead()->getNext();
     const int D = this->numberOfDocuments;
