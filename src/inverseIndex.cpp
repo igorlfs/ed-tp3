@@ -23,7 +23,6 @@ InverseIndex::createIndex(const string &corpusDirName,
         document.open(documentName);
         while (true) {
             string str;
-            long long pos;
             document >> str;
             // TODO: tratar isso melhor
             /* for (const char c : str) { */
@@ -32,7 +31,7 @@ InverseIndex::createIndex(const string &corpusDirName,
             if (document.eof()) break;
             // TODO: Checar FAIL
             if (this->stopWords.find(str)) continue;
-            pos = hash(str);
+            const int pos = hash(str);
             if (!isInIndex(documentName, index[pos]))
                 index[pos].insertEnd(make_pair(documentName, 1));
             else incrementInDoc(documentName, index[pos]);
