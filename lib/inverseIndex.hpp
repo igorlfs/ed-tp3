@@ -11,11 +11,11 @@ class InverseIndex {
   public:
     LinkedList<pair<string, int>> *createIndex(const string &corpusDirName,
                                                const string &stopWordsFileName);
-    void calculateNormalizers();
+    void process(const string &filename, const string &outputFileName);
 
   private:
     static constexpr int M = 100003;
-    long long hash(const string &s);
+    int numberOfDocuments;
     LinkedList<pair<string, int>> index[M];
     LinkedList<string> stopWords;
     LinkedList<string> query;
