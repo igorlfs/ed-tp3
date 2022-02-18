@@ -85,6 +85,21 @@ void InverseIndex::setDocuments(const string &corpusDirName) {
         this->documents.insertEnd(docs[i]);
     }
 }
+
+void InverseIndex::setQuery(const string &filename) {
+    ifstream stopWordsFile;
+    stopWordsFile.open(filename);
+    // TODO: Checar se abriu corretamente
+    while (true) {
+        string str;
+        stopWordsFile >> str;
+        // TODO: tratar números e afins
+        if (stopWordsFile.eof()) break;
+        // TODO: Checar FAIL
+        this->query.insertEnd(str);
+    }
+    stopWordsFile.close();
+    // TODO: Checar se fechou corretamente
 }
 
 int InverseIndex::hash(const string &s) {
