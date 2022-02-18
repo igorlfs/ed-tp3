@@ -36,5 +36,6 @@ int main(int argc, char *argv[]) {
     parseArgs(argc, argv);
     InverseIndex I;
     I.createIndex(corpusDirName, stopWordsFileName);
+    I.process(inputFileName, outputFileName);
     return 0;
 }
