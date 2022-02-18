@@ -70,6 +70,16 @@ void InverseIndex::calculateNormalizers(double *documentWeights) {
     }
 }
 
+int InverseIndex::getFrequency(const string &id,
+                               LinkedList<pair<string, int>> &list) {
+    Cell<pair<string, int>> *p = list.getHead()->getNext();
+    while (p != nullptr) {
+        if (p->item.first == id) return p->item.second;
+        p = p->getNext();
+    }
+    throw "Não deve chegar aqui";
+}
+
 void InverseIndex::setStopWords(const string &stopWordsFileName) {
     ifstream stopWordsFile;
     stopWordsFile.open(stopWordsFileName);
