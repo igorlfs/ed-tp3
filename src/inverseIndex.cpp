@@ -60,9 +60,10 @@ void InverseIndex::calculateNormalizers() {
         while (q != nullptr) {
             int freqTerm = getFrequency(documentName, index[q->getItem()]);
             double numDocsTerm = index[q->getItem()].getSize();
-            weight += freqTerm * log(D / numDocsTerm);
+            weight += pow((freqTerm * log(D / numDocsTerm)), 2);
             q = q->getNext();
         }
+        weight = sqrt(weight);
         this->documentsWeights.insertEnd(weight);
         p = p->getNext();
     }
