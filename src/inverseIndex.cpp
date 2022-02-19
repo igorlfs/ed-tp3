@@ -119,21 +119,16 @@ int InverseIndex::hash(const string &s) {
 
 void InverseIndex::clearFile(const string &filename) {
     fstream fs(filename, fstream::in | fstream::out);
-    if (fs.is_open()) {
-        while (!fs.eof()) {
-            char c = fs.get();
-            if (isalpha(c)) {
-                fs.seekp((fs.tellp() - static_cast<std::streampos>(1)));
-                fs.put(tolower(c));
-                fs.seekp(fs.tellp());
-            } else {
-                fs.seekp((fs.tellp() - static_cast<std::streampos>(1)));
-                fs.put(' ');
-                fs.seekp(fs.tellp());
-            }
-        }
-        fs.close();
+    erroAssert(fs.is_open(), "Erro ao abrir arquivo para limpeza");
+    while (!fs.eof()) {
+        char c = fs.get();
+        fs.seekp((fs.tellp() - static_cast<std::streampos>(1)));
+        if (isalpha(c)) fs.put(tolower(c));
+        else fs.put(' ');
+        fs.seekp(fs.tellp());
     }
+    fs.close();
+    erroAssert(!fs.is_open(), "Erro ao fechar arquivo para limpeza");
 }
 
 bool InverseIndex::isInIndex(const string &id,
