@@ -24,22 +24,21 @@ InverseIndex::createIndex(const string &corpusDirName,
         clearFile(p->getItem());
         ifstream document;
         const string documentName = p->getItem();
-        // TODO: Checar se abriu corretamente
         document.open(documentName);
+        erroAssert(document.is_open(), "Erro ao abrir arquivo do corpus");
         while (true) {
             string str;
             document >> str;
             if (document.eof()) break;
-            // TODO: Checar FAIL
+            erroAssert(document.good(), "Erro ao ler do arquivo de stopwords");
             if (this->stopWords.find(str)) continue;
             const int pos = hash(str);
             if (!isInIndex(documentName, index[pos]))
                 index[pos].insertEnd(make_pair(documentName, 1));
             else incrementInDoc(documentName, index[pos]);
         }
-        // TODO: Checar se fechou corretamente
         document.close();
-        // TODO: cálcula peso do documento
+        erroAssert(!document.is_open(), "Erro ao fechar arquivo do corpus");
         p = p->getNext();
     }
     return index;
@@ -60,16 +59,18 @@ int InverseIndex::getFrequency(const string &id,
 void InverseIndex::setStopWords(const string &stopWordsFileName) {
     ifstream stopWordsFile;
     stopWordsFile.open(stopWordsFileName);
-    // TODO: Checar se abriu corretamente
+    erroAssert(stopWordsFile.is_open(),
+               "Erro ao abrir arquivo com as stopwords");
     while (true) {
         string str;
         stopWordsFile >> str;
         if (stopWordsFile.eof()) break;
-        // TODO: Checar FAIL
+        erroAssert(stopWordsFile.good(), "Erro ao ler do arquivo de stopwords");
         this->stopWords.insertEnd(str);
     }
     stopWordsFile.close();
-    // TODO: Checar se fechou corretamente
+    erroAssert(!stopWordsFile.is_open(),
+               "Erro ao fechar arquivo com as stopwords");
 }
 
 void InverseIndex::setDocuments(const string &corpusDirName) {
@@ -90,19 +91,18 @@ void InverseIndex::setDocuments(const string &corpusDirName) {
 
 void InverseIndex::setQuery(const string &filename) {
     clearFile(filename);
-    ifstream stopWordsFile;
-    stopWordsFile.open(filename);
-    // TODO: Checar se abriu corretamente
+    ifstream queryFile;
+    queryFile.open(filename);
+    erroAssert(queryFile.is_open(), "Erro ao abrir arquivo da consulta");
     while (true) {
         string str;
-        stopWordsFile >> str;
-        // TODO: tratar números e afins
-        if (stopWordsFile.eof()) break;
-        // TODO: Checar FAIL
+        queryFile >> str;
+        if (queryFile.eof()) break;
+        erroAssert(queryFile.good(), "Erro ao ler do arquivo da consulta");
         this->query.insertEnd(str);
     }
-    stopWordsFile.close();
-    // TODO: Checar se fechou corretamente
+    queryFile.close();
+    erroAssert(!queryFile.is_open(), "Erro ao fechar arquivo da consulta");
 }
 
 int InverseIndex::hash(const string &s) {
