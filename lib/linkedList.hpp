@@ -8,6 +8,7 @@ template <typename T> class LinkedList : public LinearList<T> {
   public:
     // Construtores
     LinkedList();
+
     // Destrutores
     ~LinkedList();
 

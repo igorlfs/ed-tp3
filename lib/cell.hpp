@@ -4,6 +4,7 @@ template <typename T> class Cell {
   public:
     // Construtores
     Cell() { this->next = nullptr; }
+
     // Getters
     T getItem() { return this->item; }
     Cell *getNext() { return this->next; }
