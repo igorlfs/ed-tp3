@@ -2,6 +2,7 @@
 
 using std::string;
 
+// Funções implementadas no header devido a idiossincrasias de templates em C++
 template <typename T>
 void merge(T array[], string secondArray[], int const &left, int const &mid,
            int const &right) {
@@ -12,6 +13,7 @@ void merge(T array[], string secondArray[], int const &left, int const &mid,
     string *secLeftArray = new string[leftSize],
            *secRightArray = new string[rightSize];
 
+    // Inicializa subarrays
     for (int i = 0; i < leftSize; i++) {
         leftArray[i] = array[left + i];
         secLeftArray[i] = secondArray[left + i];
@@ -23,7 +25,7 @@ void merge(T array[], string secondArray[], int const &left, int const &mid,
 
     int indexLeft = 0, indexRight = 0, indexMerged = left;
 
-    // Merge the temp arrays back into array[left..right]
+    // Acopla os arrays temporários
     while (indexLeft < leftSize && indexRight < rightSize) {
         if (leftArray[indexLeft] >= rightArray[indexRight]) {
             array[indexMerged] = leftArray[indexLeft];
@@ -37,15 +39,13 @@ void merge(T array[], string secondArray[], int const &left, int const &mid,
         indexMerged++;
     }
 
-    // Copy the remaining elements of left[], if there are any
+    // Copia elementos restantes, se necessário
     while (indexLeft < leftSize) {
         array[indexMerged] = leftArray[indexLeft];
         secondArray[indexMerged] = secLeftArray[indexLeft];
         indexLeft++;
         indexMerged++;
     }
-
-    // Copy the remaining elements of right[], if there are any
     while (indexRight < rightSize) {
         array[indexMerged] = rightArray[indexRight];
         secondArray[indexMerged] = secRightArray[indexRight];
@@ -53,6 +53,7 @@ void merge(T array[], string secondArray[], int const &left, int const &mid,
         indexMerged++;
     }
 
+    // Desaloca memória
     delete[] leftArray;
     delete[] rightArray;
     delete[] secLeftArray;
@@ -64,7 +65,7 @@ void mergeSort(T array[], string secondArray[], int const &begin,
                int const &end) {
     if (begin >= end) return;
 
-    int mid = begin + (end - begin) / 2;
+    const int mid = begin + (end - begin) / 2;
     mergeSort(array, secondArray, begin, mid);
     mergeSort(array, secondArray, mid + 1, end);
     merge(array, secondArray, begin, mid, end);
