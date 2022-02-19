@@ -1,5 +1,6 @@
 #include "inverseIndex.hpp"
 #include "mergeSort.hpp"
+#include "msgassert.hpp"
 #include "quickSort.hpp"
 #include <cmath>
 #include <filesystem>
@@ -167,7 +168,12 @@ void InverseIndex::process(const string &inputFileName,
     string docsIds[D];
     Cell<string> *r = this->documents.getHead()->getNext();
     for (int i = 0; i < D; ++i, r = r->getNext()) {
-        docsIds[i] = r->getItem();
+        const string str = r->getItem();
+        const unsigned long start = str.rfind('/') + 1;
+        erroAssert(start != string::npos, "O path do documento não contém '/'");
+        const unsigned long end = str.rfind('.');
+        if (end != string::npos) docsIds[i] = str.substr(start, end - start);
+        else docsIds[i] = str.substr(start);
     }
 
     double documentWeights[D];
