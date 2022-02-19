@@ -1,10 +1,11 @@
 #include "linkedList.hpp"
+#include "msgassert.hpp"
 #include <iostream>
 
 // @brief Constrói lista inicializando cabeça e cauda
 template <typename T> LinkedList<T>::LinkedList() : LinearList<T>() {
     this->head = new (std::nothrow) Cell<T>;
-    /* erroAssert(this->head, "Falha ao alocar dinamicamente a célula."); */
+    erroAssert(this->head, "Falha ao alocar dinamicamente a célula cabeça.");
     this->tail = this->head;
 }
 
@@ -18,6 +19,7 @@ template <typename T> LinkedList<T>::~LinkedList() {
 // @param c, célula a ser inserida
 template <typename T> void LinkedList<T>::insertEnd(const T &c) {
     Cell<T> *newCell = new (std::nothrow) Cell<T>;
+    erroAssert(newCell, "Falha ao alocar dinamicamente a célula.");
 
     newCell->item = c;
     this->tail->next = newCell;
@@ -29,8 +31,7 @@ template <typename T> void LinkedList<T>::insertEnd(const T &c) {
 // @return item da célula removida
 template <typename T> T LinkedList<T>::removeBeg() {
 
-    /* erroAssert(!this->empty(), "Falha ao remover item da lista: lista
-     * vazia"); */
+    erroAssert(!this->empty(), "Falha ao remover item da lista: lista vazia");
     Cell<T> *p = this->head->next;
     this->head->next = p->next;
     this->size--;
