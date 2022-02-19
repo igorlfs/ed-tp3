@@ -30,6 +30,6 @@ class InverseIndex {
     bool isInIndex(const string &id, LinkedList<pair<string, int>> &list);
     void incrementInDoc(const string &id, LinkedList<pair<string, int>> &list);
     void calculateNormalizers(double *documentWeights);
-    void print(const string &outputFileName, const string *documentIDs,
+    void print(const string &filename, const string *documentIDs,
                const double *normQuery);
 };

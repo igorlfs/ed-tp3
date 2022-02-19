@@ -231,13 +231,17 @@ void InverseIndex::calculateNormalizers(double *documentWeights) {
     }
 }
 
-void InverseIndex::print(const string &outputFileName,
-                         const string *documentIDs, const double *normQuery) {
+void InverseIndex::print(const string &filename, const string *documentIDs,
+                         const double *normQuery) {
     ofstream outputFile;
-    outputFile.open(outputFileName);
+    outputFile.open(filename);
+    erroAssert(outputFile.is_open(), "Erro ao abrir arquivo do ranking");
     for (int i = 0; i < this->numberOfDocuments; ++i) {
         if (normQuery[i] <= 0 || i == 10) break;
         outputFile << documentIDs[i] << ' ';
+        erroAssert(outputFile.good(), "Erro ao escrever no arquivo do ranking");
     }
     outputFile.put('\n');
+    outputFile.close();
+    erroAssert(!outputFile.is_open(), "Erro ao abrir arquivo do ranking");
 }
