@@ -1,7 +1,7 @@
 #pragma once
 
 #include "linkedList.hpp"
-#include <string>
+#include <string.h>
 #include <utility>
 
 using std::pair;
