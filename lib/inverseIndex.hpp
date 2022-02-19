@@ -26,6 +26,7 @@ class InverseIndex {
     void setDocuments(const string &corpusDirName);
     void setQuery(const string &filename);
     int hash(const string &s);
+    void clearFile(const string &filename);
     bool isInIndex(const string &id, LinkedList<pair<string, int>> &list);
     void incrementInDoc(const string &id, LinkedList<pair<string, int>> &list);
     void calculateNormalizers(double *documentWeights);

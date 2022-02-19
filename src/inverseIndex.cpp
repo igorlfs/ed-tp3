@@ -7,6 +7,7 @@
 #include <iostream>
 
 using std::distance;
+using std::fstream;
 using std::ifstream;
 using std::make_pair;
 using std::ofstream;
@@ -14,10 +15,12 @@ using std::ofstream;
 LinkedList<pair<string, int>> *
 InverseIndex::createIndex(const string &corpusDirName,
                           const string &stopWordsFileName) {
+    clearFile(stopWordsFileName);
     setStopWords(stopWordsFileName);
     setDocuments(corpusDirName);
     Cell<string> *p = this->documents.getHead()->getNext();
     while (p != nullptr) {
+        clearFile(p->getItem());
         ifstream document;
         const string documentName = p->getItem();
         // TODO: Checar se abriu corretamente
@@ -25,10 +28,6 @@ InverseIndex::createIndex(const string &corpusDirName,
         while (true) {
             string str;
             document >> str;
-            // TODO: tratar isso melhor
-            /* for (const char c : str) { */
-            /*     if (isalpha(tolower(c))) term += c; */
-            /* } */
             if (document.eof()) break;
             // TODO: Checar FAIL
             if (this->stopWords.find(str)) continue;
@@ -52,6 +51,7 @@ int InverseIndex::getFrequency(const string &id,
         if (p->item.first == id) return p->item.second;
         p = p->getNext();
     }
+
     // Essa função só deve ser chamada quando é garantido que o id está na lista
     throw "Não deve chegar aqui";
 }
@@ -88,6 +88,7 @@ void InverseIndex::setDocuments(const string &corpusDirName) {
 }
 
 void InverseIndex::setQuery(const string &filename) {
+    clearFile(filename);
     ifstream stopWordsFile;
     stopWordsFile.open(filename);
     // TODO: Checar se abriu corretamente
@@ -113,6 +114,25 @@ int InverseIndex::hash(const string &s) {
         p_pow = (p_pow * p) % m;
     }
     return hash_value;
+}
+
+void InverseIndex::clearFile(const string &filename) {
+    fstream fs(filename, fstream::in | fstream::out);
+    if (fs.is_open()) {
+        while (!fs.eof()) {
+            char c = fs.get();
+            if (isalpha(c)) {
+                fs.seekp((fs.tellp() - static_cast<std::streampos>(1)));
+                fs.put(tolower(c));
+                fs.seekp(fs.tellp());
+            } else {
+                fs.seekp((fs.tellp() - static_cast<std::streampos>(1)));
+                fs.put(' ');
+                fs.seekp(fs.tellp());
+            }
+        }
+        fs.close();
+    }
 }
 
 bool InverseIndex::isInIndex(const string &id,

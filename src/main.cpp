@@ -12,7 +12,7 @@ void help() {
     cerr << "\t-i <arq>\t\t(entrada: consulta) \n";
     cerr << "\t-o <arq>\t\t(saída: ranking)\n";
     cerr << "\t-c <diretório>\t\t(entrada: corpus)\n";
-    cerr << "\t-s <arq>\t\t(entrada: stop words) \n";
+    cerr << "\t-s <arq>\t\t(entrada: stopwords) \n";
 }
 
 void parseArgs(const int &argc, char **argv) {
@@ -33,7 +33,7 @@ void parseArgs(const int &argc, char **argv) {
     erroAssert(!outputFileName.empty(), "Nome do arquivo de ranking vazio");
     erroAssert(!corpusDirName.empty(), "Nome do diretório do corpus vazio");
     erroAssert(!stopWordsFileName.empty(),
-               "Nome do arquivo de stop words vazio");
+               "Nome do arquivo de stopwords vazio");
 }
 
 int main(int argc, char *argv[]) {
