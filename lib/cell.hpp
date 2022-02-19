@@ -6,8 +6,8 @@ template <typename T> class Cell {
     Cell() { this->next = nullptr; }
 
     // Getters
-    T getItem() { return this->item; }
-    Cell *getNext() { return this->next; }
+    T getItem() const { return this->item; }
+    Cell *getNext() const { return this->next; }
 
   private:
     T item;

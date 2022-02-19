@@ -13,7 +13,7 @@ $(EXE): $(OBJ)/inverseIndex.o $(OBJ)/main.o $(OBJ)/linkedList.o
 $(OBJ)/linkedList.o: $(LIB)/msgassert.hpp $(LIB)/linkedList.hpp $(SRC)/linkedList.cpp
 	$(CC) $(CFLAGS) -c $(SRC)/linkedList.cpp -o $(OBJ)/linkedList.o
 
-$(OBJ)/inverseIndex.o: $(LIB)/inverseIndex.hpp $(LIB)/linkedList.hpp $(LIB)/mergeSort.hpp $(LIB)/quickSort.hpp $(SRC)/inverseIndex.cpp
+$(OBJ)/inverseIndex.o: $(LIB)/linkedList.hpp $(LIB)/mergeSort.hpp $(LIB)/quickSort.hpp $(LIB)/msgassert.hpp $(LIB)/inverseIndex.hpp $(SRC)/inverseIndex.cpp
 	$(CC) $(CFLAGS) -c $(SRC)/inverseIndex.cpp -o $(OBJ)/inverseIndex.o
 
 $(OBJ)/main.o: $(LIB)/msgassert.hpp $(LIB)/inverseIndex.hpp $(SRC)/main.cpp

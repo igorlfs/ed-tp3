@@ -1,3 +1,5 @@
+#pragma once
+
 // Funções implementadas no header devido a idiossincrasias de templates em C++
 template <typename T>
 void partition(const int &left, const int &right, int &i, int &j, T *r) {

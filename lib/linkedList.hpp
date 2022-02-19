@@ -13,7 +13,7 @@ template <typename T> class LinkedList : public LinearList<T> {
     ~LinkedList();
 
     // Getters
-    Cell<T> *getHead() { return this->head; }
+    Cell<T> *getHead() const { return this->head; }
 
     // Modificadores
     void insertEnd(const T &c);

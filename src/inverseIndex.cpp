@@ -5,7 +5,6 @@
 #include <cmath>
 #include <filesystem>
 #include <fstream>
-#include <iostream>
 
 using std::distance;
 using std::fstream;
@@ -45,7 +44,7 @@ InverseIndex::createIndex(const string &corpusDirName,
 }
 
 int InverseIndex::getFrequency(const string &id,
-                               LinkedList<pair<string, int>> &list) {
+                               LinkedList<pair<string, int>> &list) const {
     Cell<pair<string, int>> *p = list.getHead()->getNext();
     while (p != nullptr) {
         if (p->item.first == id) return p->item.second;
@@ -56,9 +55,9 @@ int InverseIndex::getFrequency(const string &id,
     throw "Não deve chegar aqui";
 }
 
-void InverseIndex::setStopWords(const string &stopWordsFileName) {
+void InverseIndex::setStopWords(const string &filename) {
     ifstream stopWordsFile;
-    stopWordsFile.open(stopWordsFileName);
+    stopWordsFile.open(filename);
     erroAssert(stopWordsFile.is_open(),
                "Erro ao abrir arquivo com as stopwords");
     while (true) {
@@ -73,13 +72,13 @@ void InverseIndex::setStopWords(const string &stopWordsFileName) {
                "Erro ao fechar arquivo com as stopwords");
 }
 
-void InverseIndex::setDocuments(const string &corpusDirName) {
+void InverseIndex::setDocuments(const string &directory) {
     namespace fs = std::filesystem;
-    this->numberOfDocuments = distance(fs::directory_iterator(corpusDirName),
-                                       fs::directory_iterator{});
+    this->numberOfDocuments =
+        distance(fs::directory_iterator(directory), fs::directory_iterator{});
     string docs[numberOfDocuments];
     int i = 0;
-    for (const auto &entry : fs::directory_iterator(corpusDirName)) {
+    for (const auto &entry : fs::directory_iterator(directory)) {
         docs[i] = entry.path();
         i++;
     }
@@ -105,7 +104,7 @@ void InverseIndex::setQuery(const string &filename) {
     erroAssert(!queryFile.is_open(), "Erro ao fechar arquivo da consulta");
 }
 
-int InverseIndex::hash(const string &s) {
+int InverseIndex::hash(const string &s) const {
     const int p = 53;
     const int m = this->M;
     int hash_value = 0;
@@ -117,7 +116,7 @@ int InverseIndex::hash(const string &s) {
     return hash_value;
 }
 
-void InverseIndex::clearFile(const string &filename) {
+void InverseIndex::clearFile(const string &filename) const {
     fstream fs(filename, fstream::in | fstream::out);
     erroAssert(fs.is_open(), "Erro ao abrir arquivo para limpeza");
     while (!fs.eof()) {
@@ -132,7 +131,7 @@ void InverseIndex::clearFile(const string &filename) {
 }
 
 bool InverseIndex::isInIndex(const string &id,
-                             LinkedList<pair<string, int>> &list) {
+                             LinkedList<pair<string, int>> &list) const {
     Cell<pair<string, int>> *p = list.getHead()->getNext();
 
     while (p != nullptr) {
@@ -144,7 +143,7 @@ bool InverseIndex::isInIndex(const string &id,
 }
 
 void InverseIndex::incrementInDoc(const string &id,
-                                  LinkedList<pair<string, int>> &list) {
+                                  LinkedList<pair<string, int>> &list) const {
     Cell<pair<string, int>> *p = list.getHead()->getNext();
     while (p != nullptr) {
         if (p->item.first == id) {
@@ -232,7 +231,7 @@ void InverseIndex::calculateNormalizers(double *documentWeights) {
 }
 
 void InverseIndex::print(const string &filename, const string *documentIDs,
-                         const double *normQuery) {
+                         const double *normQuery) const {
     ofstream outputFile;
     outputFile.open(filename);
     erroAssert(outputFile.is_open(), "Erro ao abrir arquivo do ranking");

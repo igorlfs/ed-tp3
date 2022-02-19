@@ -11,7 +11,7 @@ class InverseIndex {
   public:
     LinkedList<pair<string, int>> *createIndex(const string &corpusDirName,
                                                const string &stopWordsFileName);
-    void process(const string &filename, const string &outputFileName);
+    void process(const string &inputFileName, const string &outputFileName);
 
   private:
     static constexpr int M = 100003;
@@ -21,15 +21,17 @@ class InverseIndex {
     LinkedList<string> query;
     LinkedList<string> documents;
 
-    int getFrequency(const string &id, LinkedList<pair<string, int>> &list);
-    void setStopWords(const string &stopWordsFileName);
-    void setDocuments(const string &corpusDirName);
+    int getFrequency(const string &id,
+                     LinkedList<pair<string, int>> &list) const;
+    void setStopWords(const string &filename);
+    void setDocuments(const string &directory);
     void setQuery(const string &filename);
-    int hash(const string &s);
-    void clearFile(const string &filename);
-    bool isInIndex(const string &id, LinkedList<pair<string, int>> &list);
-    void incrementInDoc(const string &id, LinkedList<pair<string, int>> &list);
+    int hash(const string &s) const;
+    void clearFile(const string &filename) const;
+    bool isInIndex(const string &id, LinkedList<pair<string, int>> &list) const;
+    void incrementInDoc(const string &id,
+                        LinkedList<pair<string, int>> &list) const;
     void calculateNormalizers(double *documentWeights);
     void print(const string &filename, const string *documentIDs,
-               const double *normQuery);
+               const double *normQuery) const;
 };
