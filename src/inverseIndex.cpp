@@ -189,9 +189,9 @@ void InverseIndex::process(const string &inputFileName,
     setQuery(inputFileName);
     string docsIDs[D];
     setIDs(docsIDs);
-    double documentWeights[D];
+    long double documentWeights[D];
     calculateNormalizers(documentWeights);
-    double normQuery[D];
+    long double normQuery[D];
     memset(normQuery, 0, sizeof(normQuery));
     Cell<string> *p = this->query.getHead()->getNext();
 
@@ -205,8 +205,8 @@ void InverseIndex::process(const string &inputFileName,
         while (q != nullptr) {
             if (isInList(q->getItem(), this->index[pos])) {
                 int freqTerm = getFrequency(q->getItem(), index[pos]);
-                double numDocsTerm = index[pos].getSize();
-                double weight = freqTerm * log(D / numDocsTerm);
+                long double numDocsTerm = index[pos].getSize();
+                long double weight = freqTerm * log(D / numDocsTerm);
                 normQuery[i] += weight;
             }
             i++;
@@ -222,12 +222,12 @@ void InverseIndex::process(const string &inputFileName,
     print(outputFileName, docsIDs, normQuery);
 }
 
-void InverseIndex::calculateNormalizers(double *documentWeights) {
+void InverseIndex::calculateNormalizers(long double *documentWeights) {
     Cell<string> *p = this->documents.getHead()->getNext();
     const int D = this->numberOfDocuments;
     int i = 0;
     while (p != nullptr) {
-        double weight = 0;
+        long double weight = 0;
         const string documentName = p->getItem();
         LinkedList<int> hashes;
         for (int j = 0; j < M; ++j) {
@@ -236,7 +236,7 @@ void InverseIndex::calculateNormalizers(double *documentWeights) {
         Cell<int> *q = hashes.getHead()->getNext();
         while (q != nullptr) {
             int freqTerm = getFrequency(documentName, index[q->getItem()]);
-            double numDocsTerm = index[q->getItem()].getSize();
+            long double numDocsTerm = index[q->getItem()].getSize();
             weight += pow((freqTerm * log(D / numDocsTerm)), 2);
             q = q->getNext();
         }
@@ -248,7 +248,7 @@ void InverseIndex::calculateNormalizers(double *documentWeights) {
 }
 
 void InverseIndex::print(const string &filename, const string *documentIDs,
-                         const double *normQuery) const {
+                         const long double *normQuery) const {
     ofstream outputFile;
     outputFile.open(filename);
     erroAssert(outputFile.is_open(), "Erro ao abrir arquivo do ranking");
