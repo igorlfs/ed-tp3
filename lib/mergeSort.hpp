@@ -29,7 +29,7 @@ void merge(T array[], string secondArray[], int const &left, int const &mid,
 
     // Acopla os arrays temporários
     while (indexLeft < leftSize && indexRight < rightSize) {
-        if (leftArray[indexLeft] >= rightArray[indexRight]) {
+        if (leftArray[indexLeft] < rightArray[indexRight]) {
             array[indexMerged] = leftArray[indexLeft];
             secondArray[indexMerged] = secLeftArray[indexLeft];
             indexLeft++;
