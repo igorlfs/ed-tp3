@@ -185,10 +185,8 @@ void InverseIndex::incrementInDoc(const string &id,
 
 void InverseIndex::process(const string &inputFileName,
                            const string &outputFileName) {
-    setQuery(inputFileName);
-
     const int D = this->numberOfDocuments;
-    string docsIds[D];
+    setQuery(inputFileName);
     string docsIDs[D];
     setIDs(docsIDs);
     double documentWeights[D];
