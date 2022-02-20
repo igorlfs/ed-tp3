@@ -25,6 +25,7 @@ class InverseIndex {
                      LinkedList<pair<string, int>> &list) const;
     void setStopWords(const string &filename);
     void setDocuments(const string &directory);
+    void setIDs(string *docsIDs);
     void setQuery(const string &filename);
     int hash(const string &s) const;
     void clearFile(const string &filename) const;

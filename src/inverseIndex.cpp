@@ -104,6 +104,18 @@ void InverseIndex::setQuery(const string &filename) {
     erroAssert(!queryFile.is_open(), "Erro ao fechar arquivo da consulta");
 }
 
+void InverseIndex::setIDs(string *docsIDs) {
+    Cell<string> *p = this->documents.getHead()->getNext();
+    for (int i = 0; i < this->numberOfDocuments; ++i, p = p->getNext()) {
+        const string str = p->getItem();
+        const unsigned long start = str.rfind('/') + 1;
+        erroAssert(start != string::npos, "O path do documento não contém '/'");
+        const unsigned long end = str.rfind('.');
+        if (end != string::npos) docsIDs[i] = str.substr(start, end - start);
+        else docsIDs[i] = str.substr(start);
+    }
+}
+
 int InverseIndex::hash(const string &s) const {
     const int p = 53;
     const int m = this->M;
@@ -160,16 +172,8 @@ void InverseIndex::process(const string &inputFileName,
 
     const int D = this->numberOfDocuments;
     string docsIds[D];
-    Cell<string> *r = this->documents.getHead()->getNext();
-    for (int i = 0; i < D; ++i, r = r->getNext()) {
-        const string str = r->getItem();
-        const unsigned long start = str.rfind('/') + 1;
-        erroAssert(start != string::npos, "O path do documento não contém '/'");
-        const unsigned long end = str.rfind('.');
-        if (end != string::npos) docsIds[i] = str.substr(start, end - start);
-        else docsIds[i] = str.substr(start);
-    }
-
+    string docsIDs[D];
+    setIDs(docsIDs);
     double documentWeights[D];
     calculateNormalizers(documentWeights);
     double normQuery[D];
@@ -200,8 +204,8 @@ void InverseIndex::process(const string &inputFileName,
     for (int i = 0; i < D; ++i) {
         normQuery[i] = normQuery[i] / documentWeights[i];
     }
-    mergeSort(normQuery, docsIds, 0, D - 1);
-    print(outputFileName, docsIds, normQuery);
+    mergeSort(normQuery, docsIDs, 0, D - 1);
+    print(outputFileName, docsIDs, normQuery);
 }
 
 void InverseIndex::calculateNormalizers(double *documentWeights) {
@@ -212,10 +216,9 @@ void InverseIndex::calculateNormalizers(double *documentWeights) {
         double weight = 0;
         const string documentName = p->getItem();
         LinkedList<int> hashes;
-        for (int i = 0; i < M; ++i) {
-            if (isInIndex(documentName, index[i])) hashes.insertEnd(i);
+        for (int j = 0; j < M; ++j) {
+            if (isInIndex(documentName, index[j])) hashes.insertEnd(j);
         }
-
         Cell<int> *q = hashes.getHead()->getNext();
         while (q != nullptr) {
             int freqTerm = getFrequency(documentName, index[q->getItem()]);
