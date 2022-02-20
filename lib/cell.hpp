@@ -9,6 +9,9 @@ template <typename T> class Cell {
     T getItem() const { return this->item; }
     Cell *getNext() const { return this->next; }
 
+    // Setters
+    void setItem(const T &t) { this->item = t; }
+
   private:
     T item;
     Cell *next;
