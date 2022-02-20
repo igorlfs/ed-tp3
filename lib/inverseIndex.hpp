@@ -29,7 +29,7 @@ class InverseIndex {
     void setQuery(const string &filename);
     int hash(const string &s) const;
     void clearFile(const string &filename) const;
-    bool isInIndex(const string &id, LinkedList<pair<string, int>> &list) const;
+    bool isInList(const string &id, LinkedList<pair<string, int>> &list) const;
     void incrementInDoc(const string &id,
                         LinkedList<pair<string, int>> &list) const;
     void calculateNormalizers(double *documentWeights);

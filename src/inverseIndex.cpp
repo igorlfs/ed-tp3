@@ -33,6 +33,7 @@ InverseIndex::createIndex(const string &corpusDirName,
             if (this->stopWords.find(str)) continue;
             const int pos = hash(str);
             if (!isInIndex(documentName, index[pos]))
+            if (!isInList(documentName, index[pos])) {
                 index[pos].insertEnd(make_pair(documentName, 1));
             else incrementInDoc(documentName, index[pos]);
         }
@@ -142,8 +143,8 @@ void InverseIndex::clearFile(const string &filename) const {
     erroAssert(!fs.is_open(), "Erro ao fechar arquivo para limpeza");
 }
 
-bool InverseIndex::isInIndex(const string &id,
-                             LinkedList<pair<string, int>> &list) const {
+bool InverseIndex::isInList(const string &id,
+                            LinkedList<pair<string, int>> &list) const {
     Cell<pair<string, int>> *p = list.getHead()->getNext();
 
     while (p != nullptr) {
@@ -190,7 +191,7 @@ void InverseIndex::process(const string &inputFileName,
         Cell<string> *q = this->documents.getHead()->getNext();
         int i = 0;
         while (q != nullptr) {
-            if (isInIndex(q->getItem(), this->index[pos])) {
+            if (isInList(q->getItem(), this->index[pos])) {
                 int freqTerm = getFrequency(q->getItem(), index[pos]);
                 double numDocsTerm = index[pos].getSize();
                 double weight = freqTerm * log(D / numDocsTerm);
@@ -217,7 +218,7 @@ void InverseIndex::calculateNormalizers(double *documentWeights) {
         const string documentName = p->getItem();
         LinkedList<int> hashes;
         for (int j = 0; j < M; ++j) {
-            if (isInIndex(documentName, index[j])) hashes.insertEnd(j);
+            if (isInList(documentName, index[j])) hashes.insertEnd(j);
         }
         Cell<int> *q = hashes.getHead()->getNext();
         while (q != nullptr) {
