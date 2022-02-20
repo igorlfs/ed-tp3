@@ -1,8 +1,8 @@
-# ignore build related folders
+# build related folders
 obj/*
 bin/*
-# ignore editor's files
+# editor's files
 .cache/
 compile_commands.json
-# ignore tracklist 
-TODO
+# test folder
+test/
