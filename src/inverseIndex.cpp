@@ -79,15 +79,21 @@ void InverseIndex::setDocuments(const string &directory) {
     namespace fs = std::filesystem;
     this->numberOfDocuments =
         distance(fs::directory_iterator(directory), fs::directory_iterator{});
-    string docs[numberOfDocuments];
+    int docs[numberOfDocuments];
+    string extensions[numberOfDocuments];
     int i = 0;
     for (const auto &entry : fs::directory_iterator(directory)) {
-        docs[i] = entry.path();
+        string filename = entry.path().filename();
+        docs[i] = stoi(filename);
+        if (filename.find('.') != string::npos)
+            extensions[i] = filename.substr(
+                filename.rfind('.'), filename.length() - filename.rfind('.'));
         i++;
     }
     quickSort(docs, i);
     for (int i = 0; i < this->numberOfDocuments; ++i) {
-        this->documents.insertEnd(docs[i]);
+        this->documents.insertEnd(directory + "/" + std::to_string(docs[i]) +
+                                  extensions[i]);
     }
 }
 
