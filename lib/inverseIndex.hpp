@@ -28,6 +28,7 @@ class InverseIndex {
     void setIDs(string *docsIDs);
     void setQuery(const string &filename);
     int hash(const string &s) const;
+    void handleCollisions(const string &s, int &pos) const;
     void clearFile(const string &filename) const;
     bool isInList(const string &id, LinkedList<pair<string, int>> &list) const;
     void incrementInDoc(const string &id,

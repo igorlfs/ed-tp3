@@ -26,16 +26,18 @@ InverseIndex::createIndex(const string &corpusDirName,
         document.open(documentName);
         erroAssert(document.is_open(), "Erro ao abrir arquivo do corpus");
         while (true) {
-            string str;
-            document >> str;
+            string term;
+            document >> term;
             if (document.eof()) break;
             erroAssert(document.good(), "Erro ao ler do arquivo de stopwords");
-            if (this->stopWords.find(str)) continue;
-            const int pos = hash(str);
-            if (!isInIndex(documentName, index[pos]))
+            if (this->stopWords.find(term)) continue;
+            int pos = hash(term);
+            handleCollisions(term, pos);
             if (!isInList(documentName, index[pos])) {
+                if (index[pos].empty())
+                    index[pos].getHead()->setItem(make_pair(term, 0));
                 index[pos].insertEnd(make_pair(documentName, 1));
-            else incrementInDoc(documentName, index[pos]);
+            } else incrementInDoc(documentName, index[pos]);
         }
         document.close();
         erroAssert(!document.is_open(), "Erro ao fechar arquivo do corpus");
@@ -129,6 +131,20 @@ int InverseIndex::hash(const string &s) const {
     return hash_value;
 }
 
+void InverseIndex::handleCollisions(const string &s, int &pos) const {
+    bool collides = true;
+    int n = 0;
+    do {
+        if (!this->index[pos].empty() &&
+            s != this->index[pos].getHead()->getItem().first) {
+            pos = (pos + 1) % this->M;
+            n++;
+            erroAssert(n != this->M,
+                       "Índice cheio, impossível inserir palavra");
+        } else collides = false;
+    } while (collides);
+}
+
 void InverseIndex::clearFile(const string &filename) const {
     fstream fs(filename, fstream::in | fstream::out);
     erroAssert(fs.is_open(), "Erro ao abrir arquivo para limpeza");
@@ -182,14 +198,12 @@ void InverseIndex::process(const string &inputFileName,
     Cell<string> *p = this->query.getHead()->getNext();
 
     while (p != nullptr) {
-        string term = p->getItem();
-        int pos = hash(term);
-        if (this->index[pos].empty()) {
-            p = p->getNext();
-            continue;
-        }
         Cell<string> *q = this->documents.getHead()->getNext();
         int i = 0;
+        string term = p->getItem();
+        int pos = hash(term);
+        handleCollisions(term, pos);
+        if (this->index[pos].empty()) goto skipPos;
         while (q != nullptr) {
             if (isInList(q->getItem(), this->index[pos])) {
                 int freqTerm = getFrequency(q->getItem(), index[pos]);
@@ -200,6 +214,7 @@ void InverseIndex::process(const string &inputFileName,
             i++;
             q = q->getNext();
         }
+    skipPos:
         p = p->getNext();
     }
     for (int i = 0; i < D; ++i) {
