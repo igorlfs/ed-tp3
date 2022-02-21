@@ -15,8 +15,7 @@ using std::ofstream;
 LinkedList<pair<string, int>> *
 InverseIndex::createIndex(const string &corpusDirName,
                           const string &stopWordsFileName) {
-    clearFile(stopWordsFileName);
-    setStopWords(stopWordsFileName);
+    setFile(stopWordsFileName);
     setDocuments(corpusDirName);
     Cell<string> *p = this->documents.getHead()->getNext();
     while (p != nullptr) {
@@ -37,7 +36,7 @@ InverseIndex::createIndex(const string &corpusDirName,
                 if (index[pos].empty())
                     index[pos].getHead()->setItem(make_pair(term, 0));
                 index[pos].insertEnd(make_pair(documentName, 1));
-            } else incrementInDoc(documentName, index[pos]);
+            } else incrementInList(documentName, index[pos]);
         }
         document.close();
         erroAssert(!document.is_open(), "Erro ao fechar arquivo do corpus");
@@ -46,6 +45,9 @@ InverseIndex::createIndex(const string &corpusDirName,
     return index;
 }
 
+// @brief recupera o número de vezes que uma palavra aparece em tal documento
+// @param id, nome do documento
+// @param list, lista associada à palavra que se deseja buscar
 int InverseIndex::getFrequency(const string &id,
                                LinkedList<pair<string, int>> &list) const {
     Cell<pair<string, int>> *p = list.getHead()->getNext();
@@ -58,61 +60,45 @@ int InverseIndex::getFrequency(const string &id,
     throw "Não deve chegar aqui";
 }
 
-void InverseIndex::setStopWords(const string &filename) {
-    ifstream stopWordsFile;
-    stopWordsFile.open(filename);
-    erroAssert(stopWordsFile.is_open(),
-               "Erro ao abrir arquivo com as stopwords");
-    while (true) {
-        string str;
-        stopWordsFile >> str;
-        if (stopWordsFile.eof()) break;
-        erroAssert(stopWordsFile.good(), "Erro ao ler do arquivo de stopwords");
+// @brief sanitiza e lê arquivo de entrada
+void InverseIndex::setFile(const string &filename) {
+    clearFile(filename);
+    ifstream inputFile;
+    inputFile.open(filename);
+    erroAssert(inputFile.is_open(), "Erro ao abrir arquivo " << filename);
+    string str;
+    while (inputFile >> str) {
         this->stopWords.insertEnd(str);
+        erroAssert(inputFile.good(), "Erro ao ler do arquivo " << filename);
     }
-    stopWordsFile.close();
-    erroAssert(!stopWordsFile.is_open(),
-               "Erro ao fechar arquivo com as stopwords");
+    inputFile.close();
+    erroAssert(!inputFile.is_open(), "Erro ao fechar arquivo " << filename);
 }
 
+// @brief conta número de documentos, ordena e setta documentos do corpus
 void InverseIndex::setDocuments(const string &directory) {
     namespace fs = std::filesystem;
     this->numberOfDocuments =
         distance(fs::directory_iterator(directory), fs::directory_iterator{});
-    int docs[numberOfDocuments];
+    int IDs[numberOfDocuments];
     string extensions[numberOfDocuments];
     int i = 0;
     for (const auto &entry : fs::directory_iterator(directory)) {
         string filename = entry.path().filename();
-        docs[i] = stoi(filename);
+        IDs[i] = stoi(filename);
         if (filename.find('.') != string::npos)
             extensions[i] = filename.substr(
                 filename.rfind('.'), filename.length() - filename.rfind('.'));
         i++;
     }
-    quickSort(docs, i);
+    quickSort(IDs, i);
     for (int i = 0; i < this->numberOfDocuments; ++i) {
-        this->documents.insertEnd(directory + "/" + std::to_string(docs[i]) +
+        this->documents.insertEnd(directory + "/" + std::to_string(IDs[i]) +
                                   extensions[i]);
     }
 }
 
-void InverseIndex::setQuery(const string &filename) {
-    clearFile(filename);
-    ifstream queryFile;
-    queryFile.open(filename);
-    erroAssert(queryFile.is_open(), "Erro ao abrir arquivo da consulta");
-    while (true) {
-        string str;
-        queryFile >> str;
-        if (queryFile.eof()) break;
-        erroAssert(queryFile.good(), "Erro ao ler do arquivo da consulta");
-        this->query.insertEnd(str);
-    }
-    queryFile.close();
-    erroAssert(!queryFile.is_open(), "Erro ao fechar arquivo da consulta");
-}
-
+// @brief transforma um path num identificador numérico
 void InverseIndex::setIDs(string *docsIDs) {
     Cell<string> *p = this->documents.getHead()->getNext();
     for (int i = 0; i < this->numberOfDocuments; ++i, p = p->getNext()) {
@@ -125,6 +111,8 @@ void InverseIndex::setIDs(string *docsIDs) {
     }
 }
 
+// @brief calcula o hash de uma string, baseado em
+// https://cp-algorithms.com/string/string-hashing.html
 int InverseIndex::hash(const string &s) const {
     const int p = 53;
     const int m = this->M;
@@ -137,6 +125,9 @@ int InverseIndex::hash(const string &s) const {
     return hash_value;
 }
 
+// @brief empurra posição para as seguintes enquanto houver colisões
+// @param s, termo da posição em questão
+// @param pos, posição testada
 void InverseIndex::handleCollisions(const string &s, int &pos) const {
     bool collides = true;
     int n = 0;
@@ -151,6 +142,7 @@ void InverseIndex::handleCollisions(const string &s, int &pos) const {
     } while (collides);
 }
 
+// @brief reescreve arquivo só contendo letras minúsculas e espaços
 void InverseIndex::clearFile(const string &filename) const {
     fstream fs(filename, fstream::in | fstream::out);
     erroAssert(fs.is_open(), "Erro ao abrir arquivo para limpeza");
@@ -166,7 +158,7 @@ void InverseIndex::clearFile(const string &filename) const {
 }
 
 bool InverseIndex::isInList(const string &id,
-                            LinkedList<pair<string, int>> &list) const {
+                            const LinkedList<pair<string, int>> &list) const {
     Cell<pair<string, int>> *p = list.getHead()->getNext();
 
     while (p != nullptr) {
@@ -177,8 +169,8 @@ bool InverseIndex::isInList(const string &id,
     return false;
 }
 
-void InverseIndex::incrementInDoc(const string &id,
-                                  LinkedList<pair<string, int>> &list) const {
+void InverseIndex::incrementInList(const string &id,
+                                   LinkedList<pair<string, int>> &list) const {
     Cell<pair<string, int>> *p = list.getHead()->getNext();
     while (p != nullptr) {
         if (p->item.first == id) {
@@ -192,7 +184,7 @@ void InverseIndex::incrementInDoc(const string &id,
 void InverseIndex::process(const string &inputFileName,
                            const string &outputFileName) {
     const int D = this->numberOfDocuments;
-    setQuery(inputFileName);
+    setFile(inputFileName);
     string docsIDs[D];
     setIDs(docsIDs);
     long double documentWeights[D];

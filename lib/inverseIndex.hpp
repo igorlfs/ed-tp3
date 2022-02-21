@@ -23,16 +23,16 @@ class InverseIndex {
 
     int getFrequency(const string &id,
                      LinkedList<pair<string, int>> &list) const;
-    void setStopWords(const string &filename);
+    void setFile(const string &filename);
     void setDocuments(const string &directory);
     void setIDs(string *docsIDs);
-    void setQuery(const string &filename);
     int hash(const string &s) const;
     void handleCollisions(const string &s, int &pos) const;
     void clearFile(const string &filename) const;
-    bool isInList(const string &id, LinkedList<pair<string, int>> &list) const;
-    void incrementInDoc(const string &id,
-                        LinkedList<pair<string, int>> &list) const;
+    bool isInList(const string &id,
+                  const LinkedList<pair<string, int>> &list) const;
+    void incrementInList(const string &id,
+                         LinkedList<pair<string, int>> &list) const;
     void calculateNormalizers(long double *documentWeights);
     void print(const string &filename, const string *documentIDs,
                const long double *normQuery) const;
