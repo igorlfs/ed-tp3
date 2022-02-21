@@ -17,13 +17,11 @@ class InverseIndex {
     static constexpr int M = 100003;
     int numberOfDocuments;
     LinkedList<pair<string, int>> index[M];
-    LinkedList<string> stopWords;
-    LinkedList<string> query;
     LinkedList<string> documents;
 
     int getFrequency(const string &id,
                      LinkedList<pair<string, int>> &list) const;
-    void setFile(const string &filename);
+    void setFile(const string &filename, LinkedList<string> &list);
     void setDocuments(const string &directory);
     void setIDs(string *docsIDs);
     int hash(const string &s) const;

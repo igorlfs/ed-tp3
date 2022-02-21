@@ -15,7 +15,8 @@ using std::ofstream;
 LinkedList<pair<string, int>> *
 InverseIndex::createIndex(const string &corpusDirName,
                           const string &stopWordsFileName) {
-    setFile(stopWordsFileName);
+    LinkedList<string> stopWords;
+    setFile(stopWordsFileName, stopWords);
     setDocuments(corpusDirName);
     Cell<string> *p = this->documents.getHead()->getNext();
     while (p != nullptr) {
@@ -29,7 +30,7 @@ InverseIndex::createIndex(const string &corpusDirName,
             document >> term;
             if (document.eof()) break;
             erroAssert(document.good(), "Erro ao ler do arquivo de stopwords");
-            if (this->stopWords.find(term)) continue;
+            if (stopWords.find(term)) continue;
             int pos = hash(term);
             handleCollisions(term, pos);
             if (!isInList(documentName, index[pos])) {
@@ -61,14 +62,16 @@ int InverseIndex::getFrequency(const string &id,
 }
 
 // @brief sanitiza e lê arquivo de entrada
-void InverseIndex::setFile(const string &filename) {
+// @param filename, nome do arquivo de entrada
+// @param list, lista que recebe as palavras contidas no arquivo
+void InverseIndex::setFile(const string &filename, LinkedList<string> &list) {
     clearFile(filename);
     ifstream inputFile;
     inputFile.open(filename);
     erroAssert(inputFile.is_open(), "Erro ao abrir arquivo " << filename);
     string str;
     while (inputFile >> str) {
-        this->stopWords.insertEnd(str);
+        list.insertEnd(str);
         erroAssert(inputFile.good(), "Erro ao ler do arquivo " << filename);
     }
     inputFile.close();
@@ -184,14 +187,15 @@ void InverseIndex::incrementInList(const string &id,
 void InverseIndex::process(const string &inputFileName,
                            const string &outputFileName) {
     const int D = this->numberOfDocuments;
-    setFile(inputFileName);
+    LinkedList<string> query;
+    setFile(inputFileName, query);
     string docsIDs[D];
     setIDs(docsIDs);
     long double documentWeights[D];
     calculateNormalizers(documentWeights);
     long double normQuery[D];
     memset(normQuery, 0, sizeof(normQuery));
-    Cell<string> *p = this->query.getHead()->getNext();
+    Cell<string> *p = query.getHead()->getNext();
 
     while (p != nullptr) {
         Cell<string> *q = this->documents.getHead()->getNext();
