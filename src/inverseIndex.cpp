@@ -81,10 +81,10 @@ void InverseIndex::setFile(const string &filename, LinkedList<string> &list) {
 // @brief conta número de documentos, ordena e setta documentos do corpus
 void InverseIndex::setDocuments(const string &directory) {
     namespace fs = std::filesystem;
-    this->numberOfDocuments =
+    this->numDocs =
         distance(fs::directory_iterator(directory), fs::directory_iterator{});
-    int IDs[numberOfDocuments];
-    string extensions[numberOfDocuments];
+    int IDs[numDocs];
+    string extensions[numDocs];
     int i = 0;
     for (const auto &entry : fs::directory_iterator(directory)) {
         string filename = entry.path().filename();
@@ -95,7 +95,7 @@ void InverseIndex::setDocuments(const string &directory) {
         i++;
     }
     quickSort(IDs, i);
-    for (int i = 0; i < this->numberOfDocuments; ++i) {
+    for (int i = 0; i < this->numDocs; ++i) {
         this->documents.insertEnd(directory + "/" + std::to_string(IDs[i]) +
                                   extensions[i]);
     }
@@ -104,7 +104,7 @@ void InverseIndex::setDocuments(const string &directory) {
 // @brief transforma um path num identificador numérico
 void InverseIndex::setIDs(string *docsIDs) {
     Cell<string> *p = this->documents.getHead()->getNext();
-    for (int i = 0; i < this->numberOfDocuments; ++i, p = p->getNext()) {
+    for (int i = 0; i < this->numDocs; ++i, p = p->getNext()) {
         const string str = p->getItem();
         const unsigned long start = str.rfind('/') + 1;
         erroAssert(start != string::npos, "O path do documento não contém '/'");
@@ -160,6 +160,9 @@ void InverseIndex::clearFile(const string &filename) const {
     erroAssert(!fs.is_open(), "Erro ao fechar arquivo para limpeza");
 }
 
+// @brief verifica se a lista de uma dada palavra contém dado documento
+// @param id, nome do documento
+// @param list, lista associada à palavra que se deseja checar
 bool InverseIndex::isInList(const string &id,
                             const LinkedList<pair<string, int>> &list) const {
     Cell<pair<string, int>> *p = list.getHead()->getNext();
@@ -172,6 +175,9 @@ bool InverseIndex::isInList(const string &id,
     return false;
 }
 
+// @brief verifica se a lista de uma dada palavra contém dado documento
+// @param id, nome do documento cujo par receberá o incremento
+// @param list, lista associada à palavra que será incrementada
 void InverseIndex::incrementInList(const string &id,
                                    LinkedList<pair<string, int>> &list) const {
     Cell<pair<string, int>> *p = list.getHead()->getNext();
@@ -186,7 +192,7 @@ void InverseIndex::incrementInList(const string &id,
 
 void InverseIndex::process(const string &inputFileName,
                            const string &outputFileName) {
-    const int D = this->numberOfDocuments;
+    const int D = this->numDocs;
     LinkedList<string> query;
     setFile(inputFileName, query);
     string docsIDs[D];
@@ -224,6 +230,8 @@ void InverseIndex::process(const string &inputFileName,
     print(outputFileName, docsIDs, normQuery);
 }
 
+// @brief calcula os normalizadores de cada documento
+// @param documentWeights, vetor que recebe os pesos
 void InverseIndex::calculateNormalizers(long double *documentWeights) {
     Cell<string> *p = this->documents.getHead()->getNext();
     const int D = this->numberOfDocuments;
@@ -249,9 +257,13 @@ void InverseIndex::calculateNormalizers(long double *documentWeights) {
     }
 }
 
+// @brief imprime o top 10 (se existir) no arquivo de saída
+// @param filename, nome do arquivo de saída
+// @param documentIDs, vetor com identificadores dos documentos
+// @param normQuery, vetor da busca realiza
 void InverseIndex::print(const string &filename, const string *documentIDs,
                          const long double *normQuery) const {
-    const int D = this->numberOfDocuments;
+    const int D = this->numDocs;
     ofstream outputFile;
     outputFile.open(filename);
     erroAssert(outputFile.is_open(), "Erro ao abrir arquivo do ranking");

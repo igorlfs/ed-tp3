@@ -15,7 +15,7 @@ class InverseIndex {
 
   private:
     static constexpr int M = 100003;
-    int numberOfDocuments;
+    int numDocs;
     LinkedList<pair<string, int>> index[M];
     LinkedList<string> documents;
 
