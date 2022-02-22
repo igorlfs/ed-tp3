@@ -30,10 +30,12 @@ void InverseIndex::createIndex(const string &corpusDirName,
         clearFile(documentName); // Sanitiza arquivo
         ifstream document;
         document.open(documentName);
-        erroAssert(document.is_open(), "Erro ao abrir arquivo do corpus");
+        erroAssert(document.is_open(),
+                   "Erro ao abrir arquivo do corpus: " << documentName);
         string term;
         while (document >> term) {
-            erroAssert(document.good(), "Erro ao ler do arquivo de stopwords");
+            erroAssert(document.good(),
+                       "Erro ao ler do arquivo do corpus: " << documentName);
             if (stopWords.find(term)) continue; // Confere se é stopword
             int pos = hash(term);
             handleCollisions(term, pos);
@@ -45,7 +47,8 @@ void InverseIndex::createIndex(const string &corpusDirName,
             } else incrementInList(documentName, this->index[pos]);
         }
         document.close();
-        erroAssert(!document.is_open(), "Erro ao fechar arquivo do corpus");
+        erroAssert(!document.is_open(),
+                   "Erro ao fechar arquivo do corpus: " << documentName);
         p = p->getNext();
     }
 }
