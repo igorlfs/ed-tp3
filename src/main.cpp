@@ -31,6 +31,9 @@ void parseArgs(const int &argc, char **argv) {
     }
     erroAssert(!inputFileName.empty(), "Nome do arquivo de consulta vazio");
     erroAssert(!outputFileName.empty(), "Nome do arquivo de ranking vazio");
+    erroAssert(
+        corpusDirName != ".",
+        "Você não pode usar o diretório '.' como corpus, use um subdiretório");
     erroAssert(!corpusDirName.empty(), "Nome do diretório do corpus vazio");
     erroAssert(!stopWordsFileName.empty(),
                "Nome do arquivo de stopwords vazio");
