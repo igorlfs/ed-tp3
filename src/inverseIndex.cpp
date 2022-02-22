@@ -12,6 +12,8 @@ using std::ifstream;
 using std::make_pair;
 using std::ofstream;
 
+const short INVALID_FREQUENCY = -1;
+
 LinkedList<pair<string, int>> *
 InverseIndex::createIndex(const string &corpusDirName,
                           const string &stopWordsFileName) {
@@ -57,8 +59,8 @@ int InverseIndex::getFrequency(const string &id,
         p = p->getNext();
     }
 
-    // Essa função só deve ser chamada quando é garantido que o id está na lista
-    throw "Não deve chegar aqui";
+    // Se o item não está presente, retorne inválido
+    return INVALID_FREQUENCY;
 }
 
 // @brief sanitiza e lê arquivo de entrada
@@ -234,26 +236,21 @@ void InverseIndex::process(const string &inputFileName,
 // @param documentWeights, vetor que recebe os pesos
 void InverseIndex::calculateNormalizers(long double *documentWeights) {
     Cell<string> *p = this->documents.getHead()->getNext();
-    const int D = this->numberOfDocuments;
-    int i = 0;
-    while (p != nullptr) {
+    // Loop nos docuemntos
+    for (int i = 0; p != nullptr; ++i, p = p->getNext()) {
         long double weight = 0;
         const string documentName = p->getItem();
-        LinkedList<int> hashes;
-        for (int j = 0; j < M; ++j) {
-            if (isInList(documentName, index[j])) hashes.insertEnd(j);
-        }
-        Cell<int> *q = hashes.getHead()->getNext();
-        while (q != nullptr) {
-            int freqTerm = getFrequency(documentName, index[q->getItem()]);
-            long double numDocsTerm = index[q->getItem()].getSize();
-            weight += pow((freqTerm * log(D / numDocsTerm)), 2);
-            q = q->getNext();
+        // Loop nas posições do hash
+        for (int j = 0; j < this->M; ++j) {
+            if (this->index[j].empty()) continue;
+            const int freqTerm = getFrequency(documentName, index[j]);
+            if (freqTerm != INVALID_FREQUENCY) {
+                const long double numDocsTerm = index[j].getSize();
+                weight += pow((freqTerm * log(this->numDocs / numDocsTerm)), 2);
+            }
         }
         weight = sqrt(weight);
         documentWeights[i] = weight;
-        i++;
-        p = p->getNext();
     }
 }
 
