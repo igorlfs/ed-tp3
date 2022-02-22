@@ -210,16 +210,20 @@ void InverseIndex::handleCollisions(const string &s, int &pos) const {
 // @param filename, nome do arquivo a ser sanitizado
 void InverseIndex::clearFile(const string &filename) const {
     fstream fs(filename, fstream::in | fstream::out);
-    erroAssert(fs.is_open(), "Erro ao abrir arquivo para limpeza");
+    erroAssert(fs.is_open(),
+               "Erro ao abrir arquivo " << filename << " para limpeza");
     while (!fs.eof()) {
         char c = fs.get();
         fs.seekp((fs.tellp() - static_cast<std::streampos>(1)));
         if (isalpha(c)) fs.put(tolower(c));
         else fs.put(' ');
         fs.seekp(fs.tellp());
+        erroAssert(!fs.bad(),
+                   "Erro ao manipular arquivo " << filename << " para limpeza");
     }
     fs.close();
-    erroAssert(!fs.is_open(), "Erro ao fechar arquivo para limpeza");
+    erroAssert(!fs.is_open(),
+               "Erro ao fechar arquivo " << filename << " para limpeza");
 }
 
 // @brief verifica se a lista de uma dada palavra contém dado documento
