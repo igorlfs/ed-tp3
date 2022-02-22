@@ -27,23 +27,6 @@ template <typename T> void LinkedList<T>::insertEnd(const T &c) {
     this->size++;
 }
 
-// @brief remove a célula no começo da lista
-// @return item da célula removida
-template <typename T> T LinkedList<T>::removeBeg() {
-
-    erroAssert(!this->empty(), "Falha ao remover item da lista: lista vazia");
-    Cell<T> *p = this->head->next;
-    this->head->next = p->next;
-    this->size--;
-
-    if (this->head->next == nullptr) this->tail = this->head;
-
-    T aux = p->item;
-    delete p;
-
-    return aux;
-}
-
 // @brief desaloca células da lista, faz cauda=cabeça, coloca tamanho 0
 template <typename T> void LinkedList<T>::clear() {
     Cell<T> *p = this->head->next;
@@ -76,5 +59,4 @@ template <typename T> bool LinkedList<T>::find(const T &t) const {
 // Defina aqui as instâncias usadas no programa
 // (Idiossincrasia de C++ com templates)
 template class LinkedList<std::string>;
-template class LinkedList<int>;
 template class LinkedList<std::pair<std::string, int>>;

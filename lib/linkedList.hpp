@@ -17,7 +17,6 @@ template <typename T> class LinkedList : public LinearList<T> {
 
     // Modificadores
     void insertEnd(const T &c);
-    T removeBeg();
     void clear() override;
 
     // Lookup
