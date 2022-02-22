@@ -3,7 +3,7 @@ CC = g++
 LIB = lib
 SRC = src
 OBJ = obj
-EXE = bin/binary
+EXE = binary
 
 CFLAGS = -Wall -Wextra -I$(LIB) -std=c++17 -g
 
