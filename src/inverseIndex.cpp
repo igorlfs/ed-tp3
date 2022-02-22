@@ -264,11 +264,12 @@ void InverseIndex::calculateNormalizers(long double *documentWeights) {
 void InverseIndex::print(const string &filename, const string *documentIDs,
                          const long double *normQuery) const {
     const int D = this->numDocs;
+    const short numRank = 11; // A contagem começa em D - 1
     ofstream outputFile;
     outputFile.open(filename);
     erroAssert(outputFile.is_open(), "Erro ao abrir arquivo do ranking");
     for (int i = D - 1; i >= 0; --i) {
-        if (normQuery[i] <= 0 || i == D - 11) break;
+        if (normQuery[i] <= 0 || i == D - numRank) break;
         outputFile << documentIDs[i] << ' ';
         erroAssert(outputFile.good(), "Erro ao escrever no arquivo do ranking");
     }
