@@ -9,8 +9,8 @@ using std::string;
 
 class InverseIndex {
   public:
-    LinkedList<pair<string, int>> *createIndex(const string &corpusDirName,
-                                               const string &stopWordsFileName);
+    void createIndex(const string &corpusDirName,
+                     const string &stopWordsFileName);
     void process(const string &inputFileName, const string &outputFileName);
 
   private:

@@ -14,43 +14,95 @@ using std::ofstream;
 
 const short INVALID_FREQUENCY = -1;
 
-LinkedList<pair<string, int>> *
-InverseIndex::createIndex(const string &corpusDirName,
-                          const string &stopWordsFileName) {
+// @brief cria o índice dado um corpus e uma lista de stopwords
+// @param corpusDirName, diretório com os documentos
+// @param stopWordsFileName, nome do arquivo com as stopwords
+void InverseIndex::createIndex(const string &corpusDirName,
+                               const string &stopWordsFileName) {
     LinkedList<string> stopWords;
+    // Define stop words e documentos
     setFile(stopWordsFileName, stopWords);
     setDocuments(corpusDirName);
     Cell<string> *p = this->documents.getHead()->getNext();
+    // Loop pelos documentos para inserir palavra a palavra
     while (p != nullptr) {
-        clearFile(p->getItem());
-        ifstream document;
         const string documentName = p->getItem();
+        clearFile(documentName); // Sanitiza arquivo
+        ifstream document;
         document.open(documentName);
         erroAssert(document.is_open(), "Erro ao abrir arquivo do corpus");
-        while (true) {
-            string term;
-            document >> term;
-            if (document.eof()) break;
+        string term;
+        while (document >> term) {
             erroAssert(document.good(), "Erro ao ler do arquivo de stopwords");
-            if (stopWords.find(term)) continue;
+            if (stopWords.find(term)) continue; // Confere se é stopword
             int pos = hash(term);
             handleCollisions(term, pos);
-            if (!isInList(documentName, index[pos])) {
-                if (index[pos].empty())
-                    index[pos].getHead()->setItem(make_pair(term, 0));
+            // Insere item na lista ou incrementa, a depender da presença
+            if (!isInList(documentName, this->index[pos])) {
+                if (this->index[pos].empty())
+                    this->index[pos].getHead()->setItem(make_pair(term, 0));
                 index[pos].insertEnd(make_pair(documentName, 1));
-            } else incrementInList(documentName, index[pos]);
+            } else incrementInList(documentName, this->index[pos]);
         }
         document.close();
         erroAssert(!document.is_open(), "Erro ao fechar arquivo do corpus");
         p = p->getNext();
     }
-    return index;
+}
+
+// @brief cria o ranking com os documentos mais adequados
+// @param inputFileName, arquivo com as queries
+// @param outputFileName, arquivo que recebe o ranking
+void InverseIndex::process(const string &inputFileName,
+                           const string &outputFileName) {
+    // Define e configura variáveis usadas nos cálculos
+    const int D = this->numDocs;
+    LinkedList<string> query;
+    setFile(inputFileName, query);
+    string docsIDs[D];
+    setIDs(docsIDs);
+    long double documentWeights[D];
+    calculateNormalizers(documentWeights);
+    long double normQuery[D];
+    memset(normQuery, 0, sizeof(normQuery));
+    Cell<string> *p = query.getHead()->getNext();
+
+    // Loop nas palavras da query
+    while (p != nullptr) {
+        Cell<string> *q = this->documents.getHead()->getNext();
+        int docTracker = 0;
+        string term = p->getItem();
+        int pos = hash(term);
+        handleCollisions(term, pos);
+        if (this->index[pos].empty()) goto skipPos;
+        // Loop nos documentos
+        while (q != nullptr) {
+            int freqTerm = getFrequency(q->getItem(), index[pos]);
+            // Se a busca tiver sucesso, calcule a norma
+            if (freqTerm != INVALID_FREQUENCY) {
+                long double numDocsTerm = index[pos].getSize();
+                long double weight = freqTerm * log(D / numDocsTerm);
+                normQuery[docTracker] += weight;
+            }
+            docTracker++;
+            q = q->getNext();
+        }
+    skipPos:
+        p = p->getNext();
+    }
+
+    // Normalize, ordene e imprima
+    for (int i = 0; i < D; ++i) {
+        normQuery[i] = normQuery[i] / documentWeights[i];
+    }
+    mergeSort(normQuery, docsIDs, 0, D - 1);
+    print(outputFileName, docsIDs, normQuery);
 }
 
 // @brief recupera o número de vezes que uma palavra aparece em tal documento
 // @param id, nome do documento
 // @param list, lista associada à palavra que se deseja buscar
+// @return frequência coressponde se presente, INVALID_FREQUENCY caso contrário
 int InverseIndex::getFrequency(const string &id,
                                LinkedList<pair<string, int>> &list) const {
     Cell<pair<string, int>> *p = list.getHead()->getNext();
@@ -81,6 +133,7 @@ void InverseIndex::setFile(const string &filename, LinkedList<string> &list) {
 }
 
 // @brief conta número de documentos, ordena e setta documentos do corpus
+// @param directory, diretório do corpus
 void InverseIndex::setDocuments(const string &directory) {
     namespace fs = std::filesystem;
     this->numDocs =
@@ -104,6 +157,7 @@ void InverseIndex::setDocuments(const string &directory) {
 }
 
 // @brief transforma um path num identificador numérico
+// @param array com os IDs dos documentos
 void InverseIndex::setIDs(string *docsIDs) {
     Cell<string> *p = this->documents.getHead()->getNext();
     for (int i = 0; i < this->numDocs; ++i, p = p->getNext()) {
@@ -118,6 +172,8 @@ void InverseIndex::setIDs(string *docsIDs) {
 
 // @brief calcula o hash de uma string, baseado em
 // https://cp-algorithms.com/string/string-hashing.html
+// @param s, string a ser hasheada
+// @return hash correspondente
 int InverseIndex::hash(const string &s) const {
     const int p = 53;
     const int m = this->M;
@@ -148,6 +204,7 @@ void InverseIndex::handleCollisions(const string &s, int &pos) const {
 }
 
 // @brief reescreve arquivo só contendo letras minúsculas e espaços
+// @param filename, nome do arquivo a ser sanitizado
 void InverseIndex::clearFile(const string &filename) const {
     fstream fs(filename, fstream::in | fstream::out);
     erroAssert(fs.is_open(), "Erro ao abrir arquivo para limpeza");
@@ -190,46 +247,6 @@ void InverseIndex::incrementInList(const string &id,
         }
         p = p->getNext();
     }
-}
-
-void InverseIndex::process(const string &inputFileName,
-                           const string &outputFileName) {
-    const int D = this->numDocs;
-    LinkedList<string> query;
-    setFile(inputFileName, query);
-    string docsIDs[D];
-    setIDs(docsIDs);
-    long double documentWeights[D];
-    calculateNormalizers(documentWeights);
-    long double normQuery[D];
-    memset(normQuery, 0, sizeof(normQuery));
-    Cell<string> *p = query.getHead()->getNext();
-
-    while (p != nullptr) {
-        Cell<string> *q = this->documents.getHead()->getNext();
-        int i = 0;
-        string term = p->getItem();
-        int pos = hash(term);
-        handleCollisions(term, pos);
-        if (this->index[pos].empty()) goto skipPos;
-        while (q != nullptr) {
-            if (isInList(q->getItem(), this->index[pos])) {
-                int freqTerm = getFrequency(q->getItem(), index[pos]);
-                long double numDocsTerm = index[pos].getSize();
-                long double weight = freqTerm * log(D / numDocsTerm);
-                normQuery[i] += weight;
-            }
-            i++;
-            q = q->getNext();
-        }
-    skipPos:
-        p = p->getNext();
-    }
-    for (int i = 0; i < D; ++i) {
-        normQuery[i] = normQuery[i] / documentWeights[i];
-    }
-    mergeSort(normQuery, docsIDs, 0, D - 1);
-    print(outputFileName, docsIDs, normQuery);
 }
 
 // @brief calcula os normalizadores de cada documento
