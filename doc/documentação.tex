@@ -1,0 +1,232 @@
+\documentclass{article}
+\usepackage{enumitem}
+\usepackage{indentfirst}
+\PassOptionsToPackage{hyphens}{url}\usepackage{hyperref}
+\usepackage{amsfonts}
+\usepackage{float}              % [...] no lugar adequado!
+\usepackage[T1]{fontenc}        % Encoding para português 
+\usepackage{lmodern}            % Conserta a fonte para PT
+\usepackage[portuguese]{babel}  % Português
+\usepackage{hyphenat}           % Use hifens corretamente
+
+\hyphenation{mate-mática recu-perar}
+
+\setlist{  
+    listparindent=\parindent,
+    parsep=0pt,
+}
+
+\def\code#1{\texttt{#1}}
+
+\author{\textbf{Igor Lacerda Faria da Silva} }
+
+\title{\textbf{Trabalho Prático 3}
+
+\textbf{Máquina de Busca Avançada}}
+
+\date{%
+    Departamento de Ciência da Computação - Universidade Federal de Minas Gerais (UFMG) - Belo Horizonte - MG - Brasil \\ [2ex]
+    \href{mailto:igorlfs@ufmg.br}{\nolinkurl{igorlfs@ufmg.br}}
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Introdução}
+
+O problema proposto foi implementar um \textbf{indexador de memória} e um \textbf{processador de consultas}, que a partir do indexador e de uma busca produz um \textit{ranking} com os documentos mais relevantes do indexador. O indexador, por sua vez, é construído a partir de um \textit{corpus} (um diretório passado como parâmetro, contendo os documentos) e um arquivo de \textit{stopwords}, ambos passados como parâmetros na execução do programa. \textit{Stopwords} são palavras muito comuns que em nada agregam numa busca, como \textit{the}, \textit{of}, \textit{a} e etc. As consultas são realizadas com o uso do Modelo Espaço Vetorial, que usa princípios de álgebra linear para criar uma classificação consistente e robusta. Foi usada uma variação desse modelo que normaliza as frequências das palavras nos documentos. Além disso, tanto o \textit{ranking} como a \textit{query} também eram passadas como parâmetros.
+
+Esta documentação tem como proposta explicar como se deu essa implementação, desde questões mais ligadas ao funcionamento do programa (Seção 2) como análises de complexidade (Seção 3) e análises experimentais (Seção 6), as estratégias de robustez adotadas (Seção 4) e os testes realizados (Seção 5). Ao final do texto, encontra-se uma conclusão (contendo o aprendizado pessoal do autor com o trabalho), bibliografias e, por último, as instruções para compilação e execução.
+
+\section{Método}
+
+O programa foi desenvolvido em C++ e compilado utilizando o g++, do GCC. A máquina que foi usada durante o desenvolvimento conta com 12Gi de memória RAM, e processador AMD Ryzen 7 5700U, e roda o sistema operacional GNU/Linux (versão do kernel: 5.16.9).
+
+A formatação do código fonte (\textbf{incluindo a indentação}) \textbf{foi feita automaticamente usando a ferramenta clang-format}. Foi usado um arquivo customizado para isso, que se encontra na raiz do projeto, com o nome de \textit{.clang-format}. É um arquivo bem curto, baseado em preferências pessoais do autor, mas que \textbf{garante a consistência da formatação do projeto}.
+
+\subsection{Organização do código e detalhes de implementação}
+
+O projeto atende à especificação no que diz respeito à organização do código de forma geral. Em particular, a única divergência é que os \emph{headers} usam a extensão \code{.hpp} e não \code{.h}. Os diversos arquivos de código estão organizados da seguinte maneira: um arquivo que executa o programa principal, uma definição e implementação de uma classe \code{InverseIndex}, uma implementação de listas \textit{linkadas} (\code{cell.hpp}, \code{linearList.hpp}, \code{linkedList.hpp} e \code{linkedList.cpp}) com base no TP 1 e dois \textit{headers} que definem ordenações com \textit{templates} em C++ (devido a idiossincrasias de C++ com \textit{templates}, esses arquivos permaneceram como \textit{headers}). Os arquivos compiláveis se encontram na pasta \textit{src}, os \textit{headers} na pasta \textit{lib}, os objetos em \textit{obj} e o binário após a \textit{linkagem} na própria raiz do projeto.
+
+A classe \code{InverseIndex} sem dúvidas é o maior alicerce deste programa. Com mais de 250 linhas, ela é responsável tanto por gerar o índice como por processá-lo (considerou-se adequado trabalhar com apenas uma classe nessa instância, visto que todas as operações permeiam o índice). Ademais, ela conta com um ``hash'', com sua própria função de \textit{hashing} e manejamento de colisões. O arquivo que executa o programa principal apenas lê os argumentos e invoca as funções de criação e processamento da classe \code{InverseIndex}.
+
+Outra questão de fundamental importância foi a implementação do tratamento de arquivos. Atendendo à especificação, não foram considerados caracteres não ASCII (letras com acento, cê-cedilha e afins). De fato, o tratamento, implementado em \code{clearFile()} consistiu em reescrever o arquivo da seguinte maneira: lê-se o arquivo caractere a caractere, se o caractere for alfabético (pela função \code{isalpha()}), ele é reescrito como minúsculo, e caso não o seja, ele é reescrito como um espaço (\textit{ie}, ' '). O arquivo resultante dessa transformação contém apenas uma linha, e é simples de ser lido usando a \textit{stream} do arquivo. Esse tratamento levou a pequenas divergências nos resultados dos testes que foram disponibilizados no \textit{moodle}.
+
+Com respeito às boas práticas, foi usado \textit{camelCase} nos nomes das variáveis e métodos (fora nomes tradicionais e possíveis exceções com nomes tradicionalmente em maiúsculas, como em \textit{IDs}).
+
+\subsection{Estruturas de Dados, TADs e métodos}
+
+A estrutura de dados canônica deste TP é o \textit{hash}, que é implementado como módulo da classe \code{InverseIndex}. Além disso, foram usadas listas encadeadas, baseadas na implementação do TP 1, para simplificar alguns métodos (é especialmente prático usar listas encadeadas quando não se sabe o tamanho de um dado \textit{array} \textit{a priori}). Também foram implementados \textbf{dois} algoritmos de ordenação, um \textit{QuickSort} para ordenar os nomes dos arquivos do \textit{corpus} (que não precisa ser estável) e uma modificação do \textit{MergeSort} que recebe dois \textit{arrays} e é estável. Preferiu-se fazer uso ao máximo de \textit{templates} para facilitar o reuso.
+
+\subsubsection{\textit{Hash}}
+
+Optou-se por não fazer uma classe dedicada para o \textit{hash}, uma vez que o membro \code{index} da classe \code{InverseIndex} é usado diversas vezes. Outras escolhas de desenvolvimento dessa estrutura são: alocação estática a partir de um inteiro grande arbitrário (100003) e manejamento de colisões por endereçamento aberto. Escolheu-se o número 100003  pois ele não é grande ao ponto de não caber na memória (mas razoavelmente grande) e por ser primo (o menor primo maior que 100000). Uma discussão do por quê é interessante usar números primos para esse fim é dada \href{https://cs.stackexchange.com/a/64191}{\nolinkurl{aqui}}. A implementação da função de \textit{hashing} teve como base \href{https://cp-algorithms.com/string/string-hashing.html}{\nolinkurl{esse}} artigo.
+
+O manejamento de colisões, implementado em \code{handleCollisions()}, faz uso de uma propriedade da implementação de listas encadeadas: normalmente, a célula cabeça não recebe nenhum conteúdo (o que simplifica algumas operações). Desse modo, a cabeça foi usada para armazenar o termo correspondente à lista encadeada na primeira inserção de cada lista. Para realizar inserções subsequentes, checava-se se o termo a ser \textit{hasheado} ``batia'' com a cabeça da lista esperada, e caso não batesse, incrementava-se a posição até que fosse encontrada uma posição adequada.
+
+\subsubsection{Índice Invertido}
+
+A classe que implementa tanto a \textbf{criação} do índice como seu \textbf{processamento} é a \code{InverseIndex}. Para realizar essas tarefas, ela possui 13 métodos: um \textit{getter} para recuperar a frequência de uma dada palavra numa lista (\code{getFrequency()}), 3 \textit{setters} para identificadores, \textit{stopwords}, busca e documentos, as duas funções de \textit{hashing} e a de limpeza de arquivos discutidas anteriormente, e funções que ou implementam as principais operações ou são auxiliares (\code{calculateNormalizers()} e \code{print()}) a elas. Em particular, funções como \code{isInList()} e \code{incrementInList()} só existem porque é usada a estrutura \code{std::pair} de C++.
+
+\subsubsection{Algoritmos de Ordenação}
+
+Foram implementados dois algoritmos de ordenação, usados em etapas diferentes do programa: um \textit{QuickSort} que ordena os números dos nomes dos arquivos (que não precisa ser estável pois os nomes de arquivos não podem se repetir) e um \textit{MergeSort} para gerar o ranking final (que precisa ser estável para atender à especificação). Além disso, o MergeSort recebe um parâmetro adicional (um segundo \textit{array}). O \textit{QuickSort} seguiu praticamente a mesma implementação do TP anterior e o \textit{MergeSort} foi inspirado na implementação do \textit{GeeksForGeeks} (que aliás, possui um vazamento de memória).
+
+\section{Análise de Complexidade}
+
+A seguir, são analisadas as complexidades de tempo e de espaço dos principais métodos do buscador. Presume-se que algumas funções padrão de C++ são \( \Theta(1) \). Alguns métodos simples serão omitidos, outros receberão comentários mais breves. De fato, somente os métodos da classe \code{InverseIndex} serão analisados em detalhes.
+
+Foi realizada uma análise detalhada do \textit{QuickSort} no TP 2, e então nessa instância será assumida sua complexidade de caso médio -- \( \Theta(n \log n) \) no número de elementos. Além disso, o \textit{MergeSort} também não vai receber atenção particular: não é um algoritmo adaptável, é sempre \( \Theta(n \log n) \) no número de elementos.
+
+\begin{itemize}
+
+	\item \code{getFrequency()}
+
+	      \textbf{Tempo:} a lista é percorrida sequencialmente, ou seja, existem diferentes casos. No melhor caso, o primeiro item da lista é encontrado e a função retorna imediatamente, então obtém-se \( \Theta(1) \). Já no pior caso a lista inteira é percorrida, chegando-se no último elemento. Portanto, o pior caso é \( \Theta(n) \) no comprimento da lista.
+
+	      \textbf{Espaço:} a variável alocada não depende do tamanho da lista e os parâmetros são passados por referência. Essa função portanto é \( \Theta(1) \) em complexidade assintótica de espaço.
+
+	\item \code{clearFile()}
+
+	      \textbf{Tempo:} essa função lê todo um arquivo e o sanitiza, conforme descrito na seção 2. Considerando que a leitura e a escrita de caracteres, assim como outras operações relacionadas de manipulação de arquivos possuem, sua complexidade assintótica de tempo depende linearmente do tamanho do arquivo.
+
+	      \textbf{Espaço:} as alocações não dependem do tamanho do arquivo (\( \Theta(1) \)).
+
+	\item \code{setFile()}
+
+	      \textbf{Tempo:} essa função chama \code{clearFile()} e lê sequencialmente o arquivo resultante, ``palavra a palavra``. Como \code{clearFile()} faz uma leitura caractere a caractere e essa função faz uma leitura por palavras, podemos dizer sua complexidade assintótica de tempo é \( \Theta(m + n) \), que \( m \) é o número de caracteres e \( n \) o número de palavras.
+
+	      \textbf{Espaço:} cada elemento que é inserido na lista precisa precisa de memória adicional, e como não existem outra alocações relevantes, essa função é \( \Theta(n) \) no número de palavras do arquivo em complexidade assintótica de tempo.
+
+	\item \code{setDocuments()}
+
+	      \textbf{Tempo:} essa função calcula, em tempo linear, o número de documentos no diretório (usando o método \code{std::distance()}. Em seguida, lê o nome dos arquivos (com possíveis extensões), os ordena com base nos identificadores, e por fim \textit{setta} o \textit{path} dos documentos. Essas operações são, respectivamente, \( \Theta(n), \Theta(n \log n) \) e \( \Theta(n) \), portanto esse método é \( \Theta(n \log n) \) em complexidade assintótica de tempo.
+
+	      \textbf{Espaço:} essa função aloca algumas variáveis que dependem do número de documentos no diretório e portanto é \( \Theta(n) \) em complexidade de espaço.
+
+	\item \code{setIDs()}
+
+	      \textbf{Tempo:} essa função percorre uma lista removendo o desnecessário de cada documento do \textit{corpus} (mantendo apenas os identificadores numéricos). Faz algumas operações com \textit{strings}, mas assumindo-se \( \Theta(1) \) para todas, conclui que essa função é linear em complexidade assintótica de tempo.
+
+	      \textbf{Espaço:} as alocações não dependem do número de documentos (\( \Theta(1) \)).
+
+	\item \code{hash()}
+
+	      \textbf{Tempo:} essa função percorre uma \textit{string}, caractere a caractere, aplicando algumas operações matemáticas de custo constante e portanto sua complexidade assintótica de tempo é linear.
+
+	      \textbf{Espaço:} as alocações não dependem do tamanho da \textit{string} (\( \Theta(1) \)).
+
+	\item \code{handleCollisions()}
+
+	      \textbf{Tempo:} se o termo em questão não está colidindo, obtém-se o melhor caso: \( \Theta(1) \). Por outro lado, se o índice está cheio, percorre-se todo o seu comprimento. No entanto, esse comprimento é fixo (o tamanho do \textit{array} \code{index}), então de certa forma, faz sentido em dizer que o pior caso é também \( \Theta(1) \), porém isso não é muito descritivo. Então, pode-se afirmar que o pior caso é \( \Theta(n) \) no tamanho do \code{index}. O caso médio é difícil de ser estimado, pois conforme o índice vai enchendo, as colisões vão ficando mais frequentes.
+
+	      \textbf{Espaço:} as alocações não dependem do tamanho dos parâmetros (\( \Theta(1) \)).
+
+	\item \code{isInList()}
+
+	      \textbf{Tempo:} a lista é percorrida sequencialmente, ou seja, existem diferentes casos. No melhor caso, o primeiro item da lista é encontrado e a função retorna imediatamente, então obtém-se \( \Theta(1) \). Já no pior caso a lista inteira é percorrida e o item procurado não é encontrado. Portanto, o pior caso é \( \Theta(n) \) no comprimento da lista.
+
+	      \textbf{Espaço:} a variável alocada não depende do tamanho da lista e os parâmetros são passados por referência. Essa função portanto é \( \Theta(1) \) em complexidade assintótica de espaço.
+
+	\item \code{incrementInList()}
+
+	      \textbf{Tempo:} no melhor caso, o primeiro item da lista é encontrado, seu número de vezes incrementado e a função retorna imediatamente, então obtém-se \( \Theta(1) \). Já no pior caso (assume-se que essa busca sempre é possível incrementar), a lista inteira é percorrida, chegando-se no último elemento. Portanto, o pior caso é \( \Theta(n) \) no comprimento da lista.
+
+	      \textbf{Espaço:} a variável alocada não depende do tamanho da lista e os parâmetros são passados por referência. Essa função portanto é \( \Theta(1) \) em complexidade assintótica de espaço.
+
+	\item \code{calculateNormalizers()}
+
+	      \textbf{Tempo:} esse método é notavelmente mais complexo (e mais complicado de analisar) que os anteriores. Essa função faz um laço entre os \( D \) documentos. Dentro desse laço principal, há um outro laço, que percorre todas as \( M \) posições do \textit{hash}. Se a lista associada a um termo estiver vazia, o laço é continuado. Caso contrário, tenta-se recuperar a frequência associada ao documento em questão para aquela lista pelo método \code{getFrequency()}, que como discutido anteriormente, é \( O(k) \) no pior caso. O restante do laço não contribui significativamente para a análise assintótica. No melhor caso, quando o índice está vazio, o método \code{getFrequency()} nunca é chamado e a complexidade da função é \( \Omega(DM) \). Já no pior caso, o método sempre é chamado. Assumindo que todas as listas tem um tamanho máximo \( k \), conclui-se que a complexidade do pior caso é \( O(DMk) \), ou seja, é cúbica.
+
+	      \textbf{Espaço:} esse método não aloca memória com base no tamanho dos parâmetros que recebe (passados por referência), então é \( \Theta(1) \).
+
+	\item \code{print()}
+
+	      \textbf{Tempo:} essa função apenas imprime no arquivo de saída o ``top'' 10 documentos mais relevantes, se existirem (se não é impresso até os documentos acabarem). Como seu laço é executado no máximo 10 vezes, sua complexidade assintótica de tempo é \( \Theta(1) \).
+
+	      \textbf{Espaço:} essa função não aloca memória a depender de seus parâmetros e por isso é \( \Theta(1) \) em complexidade assintótica de tempo.
+
+	\item \code{createIndex()}
+
+	      \textbf{Tempo:} esse método é também complicado de ser analisado. A primeira operação relevante é o \code{setFile()} para o arquivo de \textit{stopwords}. Seja \( a \) o número de caracteres no arquivo e \( b \) o número de palavras, o método começa com \( \Theta(a+b) \). Em seguida, os documentos são configurados em um custo \( \Theta(n \log n) \) pela análise da função \code{setDocuments()}. O passo seguinte é um laço no número \( n \) de documentos. A primeira etapa é limpar os arquivos, em tempo \( \Theta(k) \) no número de caracteres máximo. A segunda etapa é um laço no número \( l \) de palavras no máximo nos documentos. Primeiro, confere-se se a palavra é uma \textit{stopword} em tamanho linear na lista de \textit{stopwords}. Assumindo que não seja \textit{stopword}, o \textit{hashing} é realizado em tempo linear no tamanho \( m \) de cada palavra. Em seguida, as colisões são tratadas em no mínimo tempo constante e no máximo \( O(M) \), tamanho total do \code{index}. Por fim, é feita uma busca na lista cuja posição foi tratada que é \( O(p) \) no pior caso e existem dois casos: se a busca retornar falso, o item é inserido na lista, assim como possivelmente o tratamento para colisões (em tempo constante). Caso contrário, a lista é mais uma vez buscada para que se incremente a posição correta, novamente em tempo \( O(p) \). Juntando todas essas operações, conclui-se que este método é \( O(a+b) + O(n \log n) + O(n (k + l (b + m + M + p))) \).
+
+	      \textbf{Espaço:} a complexidade assintótica de espaço, em contra partida, não é tão difícil de ser analisada. A maioria das variáveis declaradas não depende dos parâmetros passados. No entanto, as funções auxiliares \code{setFile()} e \code{setDocuments()} alocam memória para suas respectivas listas. Sendo \( n \) o número de palavras no arquivo e sejam \( k \) documentos, esse método possui complexidade assintótica de espaço \( O(n+k) \).
+
+	\item \code{process()}
+
+	      \textbf{Tempo:} o último método é também o mais difícil de analisar. A \textit{query} é definida em \( \Theta(a) \), no número de palavras, depois os documentos em tempo \( O(D) \) e os pesos dos documentos em \( O(DMk) \) (adicionavelmente é usada a função \code{memset} para zerar todos os valores). A etapa seguinte é fazer um laço nas \( a \) palavras da \textit{query}, \textit{hasheando} com base no tamanho \( l \) da string e tratando colisões, na pior das hipóteses, em tempo \( O(M) \). Se a palavra está ausente, ela é pulada. Se está presente, é feito um laço nos \( D \) documentos, onde se busca a frequência pela lista de tamanho \( p \) e são realizadas algumas operações de custo constante. No terceiro bloco de código, a \textit{query} é normalizada em \( \Theta(D) \), os vetores ordenados em \( \Theta(D \log D) \) e o resultado impresso em tempo constante. Juntando todas essas informações e simplificando um pouco, conclui-se que o pior caso é \( O(DMk) + O(D \log D) + O(a(l+M+Dp)) \).
+
+	      \textbf{Espaço:} são feitas diversas alocações que dependem do número de documentos \( D \). Além disso, também é alocado espaço para a \textit{query}. Logo, a complexidade assintótica de tempo desse método é \( \Theta(D+n) \).
+
+\end{itemize}
+
+A complexidade do programa como um todo é a soma da complexidade da função \code{process()} e da função \code{createIndex()} (em termos de complexidade assintótica de tempo). Em espaço deve ser considerado também a memória alocada ao se declarar o objeto \code{I} do tipo \code{InverseIndex}, que é constante mas não é barata em termos computacionais.
+
+\section{Estratégias de Robustez}
+
+Não foram implementadas muitas estratégias de robustez, somente o necessário para garantir o funcionamento do programa. Isso inclui abortar o programa quando houver falha ao alocar memória (usando o operador \code{new}) na classe \code{LinkedList} e constante tratamentos de arquivos: sempre é conferido se o arquivo foi aberto, escrito (ou lido) e fechado corretamente. Todas essas condições são checadas se usando o \code{msgassert}, biblioteca inspirada na implementação do Wagner Meira Júnior para tratar esses tipos de erro.
+
+Adicionalmente são tratados algumas outras exceções: ao se tratar as colisões de \textit{hash}, é possível que o índice fique cheio. Tendo isso em mente, a função \code{handleCollisions()} possui um contador para averiguar se o índice encheu e, caso afirmativo, abortar o programa. Outra exceção está no tratamento do \textit{path} do corpus: a função \code{setIDs()} espera receber que o \textit{path} contenha o caractere `/' (como é definido na função \code{setDocuments()}).
+
+Os parâmetros do programa também são checados para averiguar se algum ficou vazio (o que não deve ocorrer). Como a função \code{stoi()} é usada em \code{setDocuments()}, o \textit{path} ``\code{.}'' para o \code{corpus} é proibido.
+
+\section{Testes Realizados}
+
+Foram realizados 4 tipos de teste do \textbf{programa completo}: o caso ``base'' da especificação (com as palavras casa, maca e lua), uma modificação para testar a validade do tratamento de colisões (``collide'') e os casos do \textit{moodle}, tanto para o \textit{corpus small} como para o \textit{corpus full} (``advanced''). Não foram realizados testes de unidade, porque a maioria das funções usadas são privadas (talvez isso seja um erro de design).
+
+Os casos, como descrito anteriormente, se encontram no diretório \code{test}. Como o programa sobrescreve os arquivos de entrada, cada diretório conta com um subdiretório \code{copy} que é uma cópia do diretório pai, exceto por si mesmo e por umas pasta com as saídas: \code{outputs}. A exceção a essa regra são os casos do \textit{moodle}, cuja pasta \code{advanced} é separada de uma pasta \code{moodle} que contém os dados vindos diretamente do \textit{moodle}.
+
+A saída do caso base está igual à esperada, como é possível conferir em seu respectivo diretório. O mesmo vale para a checagem de colisões. Mais especificamente, no teste de colisões, ``lua'' vira \textit{moon}, ``maca'' vira \textit{silver} e ``casa'' vira \textit{dimension} (foi testado separadamente que \textit{silver} e \textit{dimension} colidem dada a função de \textit{hash} usada). Além disso, as \textit{stopwords} foram trocadas para correspondentes no inglês. Mas o resultado foi exatamente igual ao caso anterior, como esperado.
+
+Foi ao realizar os testes do \textit{moodle} que a situação complicou. Como apontado por alguns alunos no fórum, os resultados obtidos diferem um pouco das saídas esperada, no geral sendo permutações destas. Acredita-se, no entanto, que essas diferenças sejam resultantes de tratamentos razoavelmente diferentes para se trabalhar apenas com caracteres alfabéticos em ASCII. De fato, o problema de verdade está relacionado à performance: a execução do programa para o \textit{corpus full} demora cerca de 13 minutos na máquina em que foi testada. Investigou-se fazer uso de \textit{multithreading} para melhorar a performance, o que acabou se provando muito complicado. Em função dessas dificuldades, somente a primeira consulta foi testada no \textit{corpus full}.
+
+\section{Análise Experimental}
+
+\textit{Por uma questão de tempo essa análise não foi realizada.}
+
+\section{Conclusões}
+
+Neste trabalho foi implementado um buscador de termos em arquivos de texto, usando o Modelo Espaço Vetorial com normalização. Foi usado um \textit{hash} para se criar um índice invertido que é processado, gerando um \textit{ranking} com os arquivos mais promissores.
+
+\subsection{Aprendizado Pessoal}
+
+Esse trabalho foi razoavelmente mais complicado de implementar que o anterior. Foi difícil entender os requerimentos. Como \textit{a priori} não sabia se podia usar STL, implementei parte do programa usando as bibliotecas \code{<map>} e \code{<list>}, o que facilitou bastante a implementação de verdade, sem STL. De fato, foi como realizar uma \textit{tradução} da versão inicial. Finalmente usei \textit{templates}, o que ficou até bacana, mas não gostei de deixar implementações em \textit{headers}. Foi bom usar a lista encadeada que tinha feito no TP 1. Outra questão de implementação que não foi de encontro ao meu agrado foi fazer uma classe \textbf{massiva} (o arquivo de \textit{source} possui cerca de 300 linhas!) para lidar com o indexador. Acho que poderia ter fracionado melhor isso (até por uma questão de testes de unidade), mas o tempo estava meio apertado.
+
+As análises de complexidade desse TP foram bem mais complicadas que as anteriores. Muitas variáveis sendo utilizadas (talvez eu devesse ter feito algumas simplificações). Não achei eficiente em termos de custo fazer uma análise experimental: pouco tempo e poucos pontos para muito trabalho.
+
+Ficam aqui meus agradecimentos aos professores e monitores pela disciplina.
+
+\section{Bibliografia}
+
+\begin{enumerate}
+
+	\item MERGE Sort. [S. l.], 10 jan. 2022. Disponível em: \url{https://www.geeksforgeeks.org/merge-sort/}. Acesso em: 20 fev. 2022.
+
+	\item STRING Hashing. [S. l.], 16 jan. 2022. Disponível em: \url{https://cp-algorithms.com/string/string-hashing.html.} Acesso em: 20 fev. 2022.
+
+\end{enumerate}
+
+
+\newpage
+\section*{Instruções}
+
+\subsection*{Compilação}
+
+Você pode compilar o programa da seguinte maneira:
+
+\begin{enumerate}
+	\item Utilize o comando \code{cd} para mudar de diretório para a localização da raiz do projeto;
+	\item Utilize o comando \code{make}.
+\end{enumerate}
+
+\subsection*{Execução}
+
+Você pode rodar o programa da seguinte maneira:
+
+\begin{enumerate}
+	\item Utilize o comando \code{cd} para mudar de diretório para a localização da raiz do projeto;
+	\item Insira o comando \code{./binary -i <consulta> -o <saída> -c <corpus> -s <stopwords>}. Todos os parâmetros são obrigatórios.
+\end{enumerate}
+
+\end{document}
