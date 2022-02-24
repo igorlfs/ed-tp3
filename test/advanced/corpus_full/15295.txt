@@ -1,0 +1,1 @@
+intel core i      t     ghz skt      mb cache tray  cm               skt      mb cache tray  

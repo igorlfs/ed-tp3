@@ -1,0 +1,1 @@
+  port hdmi splitter     in   out     hdmi source to   displays 

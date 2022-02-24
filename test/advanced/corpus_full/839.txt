@@ -1,0 +1,1 @@
+nvidia quadro nvs       graphics adapter   quadro nvs       pci express x         mb ddr    dvi 

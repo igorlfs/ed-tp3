@@ -1,0 +1,1 @@
+usb     p    multi memory card reader sd sdhc sdxc win   

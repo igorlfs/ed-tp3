@@ -1,0 +1,1 @@
+hmc    l   axis electronic compass magnetometer sensor module  v  v for arduino 

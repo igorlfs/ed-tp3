@@ -1,0 +1,1 @@
+ws gpoe      v   w gigabit    port power over ethernet injector passive poe for      af devices 

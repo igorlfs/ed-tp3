@@ -1,0 +1,1 @@
+g skill ripjaws   memory     gb     x   gb   dimm     pin   ddr         mhz   pc          cl        v   unbuffered   non ecc 

@@ -1,0 +1,1 @@
+micron  gb fully buffered ddr  ram pc       ecc registered     pin fbdimm 

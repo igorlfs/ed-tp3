@@ -1,0 +1,1 @@
+vocore v      openwrt linux sbc with wifi 

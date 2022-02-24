@@ -1,0 +1,1 @@
+  usb     a type out   usb b type   port shareing device kvm switch 

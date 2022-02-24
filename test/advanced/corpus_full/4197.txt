@@ -1,0 +1,1 @@
+pci   channel midi  d audio pc sound card game port 

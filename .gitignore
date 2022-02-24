@@ -4,5 +4,3 @@ binary
 # editor's files
 .cache/
 compile_commands.json
-# test folder
-test/

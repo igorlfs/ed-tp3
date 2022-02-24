@@ -1,0 +1,1 @@
+altronix power distribution module pd ulcb   output power distribution module   converts ac or dc power input     volts      amp max   into four     ptc power outputs  ul recognized  

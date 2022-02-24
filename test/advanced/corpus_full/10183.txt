@@ -1,0 +1,1 @@
+pcchips p  g     fsb    gc sata ddr  mb 

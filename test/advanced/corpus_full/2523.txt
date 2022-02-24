@@ -1,0 +1,1 @@
+cisco sfp h  gb acu m  twinax network cable features twinaxial         ft cisco active twinax  m cable assembly having a   g ethernet protocol has   x sfp  ports consists of   awg copper conductor  features cisco   gbase sfp  modules and has   g form factor and supports digital optical monitoring capability  

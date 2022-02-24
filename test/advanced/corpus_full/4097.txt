@@ -1,0 +1,1 @@
+  port usb     pci e express   xext  xint  with   pin sata power 

@@ -1,0 +1,1 @@
+gateway ps   multimedia desktop us keyboard        r 

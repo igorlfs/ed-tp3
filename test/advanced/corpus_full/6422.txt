@@ -1,0 +1,1 @@
+       nic    bit single rj   ethernet pci adapter network lan card 

@@ -1,0 +1,1 @@
+intel mb blkd   gczl lga            fsb  ddr  aud vdo lan micro 

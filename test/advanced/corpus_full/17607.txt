@@ -1,0 +1,1 @@
+ficbox  pcs dual axis xy joystick module for arduino joystick module dual axis xy joystick module dimensions               cm   potentiometers for   axes   switch connector    vcc   gnd   vrx   vry   sw 

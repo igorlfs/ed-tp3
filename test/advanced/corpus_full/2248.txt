@@ -1,0 +1,1 @@
+intel            dual        pci adapter intel            dual        pci adapter 

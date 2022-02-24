@@ -1,0 +1,1 @@
+hde   port expresscard gigabit ethernet lan network card 

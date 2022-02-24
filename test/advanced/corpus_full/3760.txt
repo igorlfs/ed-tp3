@@ -1,0 +1,1 @@
+sparepart  hp nic pro      ct             condition note  usedhp rp     retail system network interface controller cardsps            model  intel pro      ct gbedata transfer rate      mbpsports  ethernet  rj     

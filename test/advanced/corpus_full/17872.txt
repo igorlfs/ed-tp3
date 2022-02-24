@@ -1,0 +1,1 @@
+nvidia quadro nvs       mb dvi vga pcie video nvs    

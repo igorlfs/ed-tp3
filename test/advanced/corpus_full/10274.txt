@@ -1,0 +1,1 @@
+dell poweredge c     c     front panel signal cable     b        jctw  dell poweredge c     c     power distribution board extension to midplane controller mb    mb    front panel signal cable     b        jctw  manufacturer  dell part number  jctw  mpn      b        compatible model  dell poweredge c     c     

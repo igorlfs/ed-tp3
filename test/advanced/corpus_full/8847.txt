@@ -1,0 +1,1 @@
+usr tcp       rs    rs    serial to tcp ip ethernet server module converter 

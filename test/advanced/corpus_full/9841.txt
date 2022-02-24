@@ -1,0 +1,1 @@
+huacam hcp       v   w passive power over ethernet poe injector    volts   watts max for   ip cameras  voip phones or access points 

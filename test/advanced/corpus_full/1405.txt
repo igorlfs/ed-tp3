@@ -1,0 +1,1 @@
+pci   channel  ch internal audio pc  d sound card adapter for desktop pc 

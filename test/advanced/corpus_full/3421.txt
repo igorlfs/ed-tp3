@@ -1,0 +1,1 @@
+samsung sh    bb internal dvd writer oem pack dvd ram     r     rw support   x read   x write  x rewrite dvd dual layer media supported sata          inch  by samsung internal   x dvd   rw dual layer ide burner drive 

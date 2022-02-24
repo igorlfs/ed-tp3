@@ -1,0 +1,1 @@
+canon canoscan fs    us   film scanner     mm film        dpi x      dpi   usb   fast scsi 

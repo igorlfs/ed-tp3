@@ -1,0 +1,1 @@
+smart   memory     gb   dimm     pin   ddr       mhz   pc       unbuffered   ecc  gb pc     ddr    eccdimm 

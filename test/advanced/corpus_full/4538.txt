@@ -1,0 +1,1 @@
+ws g         gbps gbic cisco  rd  optical transceiver  dual data rate    nm vcse 

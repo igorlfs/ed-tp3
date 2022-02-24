@@ -1,0 +1,1 @@
+new   port vga svga manual switch  peripheral sharing  

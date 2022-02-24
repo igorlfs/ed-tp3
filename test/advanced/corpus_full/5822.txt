@@ -1,0 +1,1 @@
+intel xeon e             ghz     core      threads      mb cache   for proliant dl   p pulled from a working environment  tested and repackaged   

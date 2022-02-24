@@ -1,0 +1,1 @@
+sata to ide adapter   connects a sata hdd to ide interface connect a sata hard drive to your motherboard s ide controller with this sata to ide converter  it features the jmicron jm      chipset and supports     inch ide hard drives and      inch optical drives  it s compliant with serial ata specification and supports up to udma     drives  

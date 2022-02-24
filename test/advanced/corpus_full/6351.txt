@@ -1,0 +1,1 @@
+atian usb     virtual     channel audio sound card adapter 

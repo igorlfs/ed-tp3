@@ -1,0 +1,1 @@
+uxcell    wires     mm pitch    pin m f idc ribbon cable    cm   pcs gray 

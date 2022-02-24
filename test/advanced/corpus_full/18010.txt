@@ -1,0 +1,1 @@
+ubiquiti networks us      w managed gigabit ethernet               power over ethernet  poe  white network switch ubiquiti us      w unifi managed poe  gigabit   ports switch with sfp    v passive poe  up to    gbps non blocking throughput      w maximum power consumption    sfp ports   up to   gbps fiber uplinks 

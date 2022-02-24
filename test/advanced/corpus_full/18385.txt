@@ -1,0 +1,1 @@
+bv tech    port poe  switch     poe  ports     gigabit ethernet   sfp uplink         w high power          at 

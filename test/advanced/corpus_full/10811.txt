@@ -1,0 +1,1 @@
+  channel     day timer    day  hours  minutes   ac control inputs   relay outputs        vac 

@@ -1,0 +1,1 @@
+sunon    x    x   mm magnetic levitation fan    pin    wires  

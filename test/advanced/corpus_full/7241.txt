@@ -1,0 +1,1 @@
+gateway       laptop  gb    gb   nv  r  u 

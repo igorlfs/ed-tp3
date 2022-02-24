@@ -1,0 +1,1 @@
+generic all in   usb    memory card reader support sd xd cf ms sdhc cards 

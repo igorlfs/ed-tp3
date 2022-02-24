@@ -1,0 +1,1 @@
+powork     watt      pin atx power supply 

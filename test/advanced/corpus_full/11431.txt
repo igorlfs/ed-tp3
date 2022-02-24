@@ -1,0 +1,1 @@
+bitmain antminer u  bitcoin miner version    important note  the included power adapter and usb cable will only yield about       gh s  with default cgminer settings   

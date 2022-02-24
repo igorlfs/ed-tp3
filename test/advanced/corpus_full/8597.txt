@@ -1,0 +1,1 @@
+cisco lab for preparing for the network   security  and the a  certifications  includes a cisco ws c    t    switch cisco catalyst     t    switch           mbps ports with two fixed            base t uplinks  and a      isr router       ios image  cisco      isr router ios image is       ios  c     adventerprisek  mz       m  bin  advanced enterprise ios includes rack ears 

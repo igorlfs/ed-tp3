@@ -1,0 +1,1 @@
+asus arctic square cpu cooler cpu support   intel  core   extreme   intel  core   quad  intel  core   duo   pentium  processor family  amd athlon     x   fx  amd athlon      sempron   fan speed      rpm       with pwm control  material cu  base   al  fin     copper heat pipes 

@@ -1,0 +1,1 @@
+cjrslrb ezp     high speed usb spi programmer support          eeprom    flash bios chip 

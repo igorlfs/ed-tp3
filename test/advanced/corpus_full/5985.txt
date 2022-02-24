@@ -1,0 +1,1 @@
+oem    mm case fan     pin molex       rpm  orange led  f      bora    

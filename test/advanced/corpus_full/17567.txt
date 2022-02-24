@@ -1,0 +1,1 @@
+bv tech    port poe  unmanaged switch     gigabit uplink        w high power     dipswitches          af at     poe sw     

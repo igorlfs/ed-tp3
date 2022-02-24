@@ -1,0 +1,1 @@
+intel xeon e     quad core processor     ghz    gt s  mb lga      cpu  oem 

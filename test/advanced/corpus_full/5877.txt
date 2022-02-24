@@ -1,0 +1,1 @@
+allied telesyn transceiver ethernet    mbps rj   st atmc   xl   at mc   xl    allied telesis atmc   xl media converter   x rj       x st    basetx     basefx 

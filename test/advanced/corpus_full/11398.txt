@@ -1,0 +1,1 @@
+cisco     ac ip wic  dsu t  v  poe power router    d    f adventerprisek  ios cisco      integrated services router ac power supply 

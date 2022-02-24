@@ -1,0 +1,1 @@
+  mm shank mechanical edge finder position testing tool for cnc lathe 

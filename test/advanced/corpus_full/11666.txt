@@ -1,0 +1,1 @@
+raspberry pi compute module compute module  raspberry pi dev board  silicon manufacturer broadcom  core architecture arm  core sub architecture arm    jzf s  silicon core number bcm      silicon family name bcm xxx  kit contents compute module bcm      rohs compliant  yes 

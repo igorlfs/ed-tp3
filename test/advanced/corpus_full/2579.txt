@@ -1,0 +1,1 @@
+hp g      nr battery   wh      mah 

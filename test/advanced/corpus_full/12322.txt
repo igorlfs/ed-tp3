@@ -1,0 +1,1 @@
+intel cm             s xeon e       v  octadeca core     core       ghz processor   socket r   lga        oem pack        mb      mb cache        gt s qpi     gt s dmi   yes        ghz overclocking speed      nm       w        ftf      ftc        v dc 

@@ -1,0 +1,1 @@
+           hp  gb ddr       mhz pc       e ecc  rx  cl      v unbuffered  gb   x gb   rx  pc       e    udimm 

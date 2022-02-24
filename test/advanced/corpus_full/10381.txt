@@ -1,0 +1,1 @@
+hp        b     intel xeon l         ghz   mb cache   core processor 

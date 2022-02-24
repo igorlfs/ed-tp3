@@ -1,0 +1,1 @@
+microplus usb       port cardbus pcmcia card uc      port usb     pcmcia card will allow you to transfer data at a speed of     mbps   megabits per second   and is backward compatible with usb     devices  

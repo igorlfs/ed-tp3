@@ -1,0 +1,1 @@
+ibm   d     ibm    gb   k  gb s sas hotswap     hard drive ibm hard drive     gb serial attached scsi      sff slim       rpm hot swap internal   fru   d         y       ca      b     ba 

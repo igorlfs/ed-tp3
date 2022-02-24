@@ -1,0 +1,1 @@
+dueladapter pcmcia   expresscard adaptor 

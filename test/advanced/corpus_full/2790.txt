@@ -1,0 +1,1 @@
+intel cm              xeon e      lv     ghz  fclga        mb    cores    threads     w  max memory    

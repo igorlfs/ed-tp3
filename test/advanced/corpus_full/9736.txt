@@ -1,0 +1,1 @@
+hard driver bidirectional   way   pin ide to sata sata to ide adapter 

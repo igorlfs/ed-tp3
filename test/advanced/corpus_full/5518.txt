@@ -1,0 +1,1 @@
+compatible atmel at avrisp usb avr isp in system programmer based on stk    upgradable   program flash eeprom fuses lock bit via usb  xyg 

@@ -1,0 +1,1 @@
+intel sr kx bx     e      e           ghz   mb smart cache      gt s qpi tdp    w processor 

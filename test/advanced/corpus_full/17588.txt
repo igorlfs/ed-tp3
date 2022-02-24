@@ -1,0 +1,1 @@
+nvidia grid m   gpu   gb gddr  accelerator processing card                    

@@ -1,0 +1,1 @@
+cyberdata        voip sip paging server with bell scheduler   supports     ohm output  page start relay contacts  remote amp fault sensor  sip rfc      compatible  multicast output  two sip endpoints  one for night ringer   dtmf control of zone selection  delayed page support  line in connection for music  line out connection to support analog amps 

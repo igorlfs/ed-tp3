@@ -1,0 +1,1 @@
+mellanox connectx dual  x   gb s pci express     x  infiniband network adapter   m         r     mfr p n mhgh   xtc  bulk package  

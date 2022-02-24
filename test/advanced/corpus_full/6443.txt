@@ -1,0 +1,1 @@
+  port superspeed usb     pci    pin sata power connector express controller card adapter low profile 

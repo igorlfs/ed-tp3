@@ -1,0 +1,1 @@
+matching pair intel xeon e         core processor    ghz    gt s qpi   mb   w bx     e      

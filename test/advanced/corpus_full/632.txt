@@ -1,0 +1,1 @@
+nec nd     a   disk drive   dvd rw   r dl      x   x   ide   internal           black 

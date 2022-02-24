@@ -1,0 +1,1 @@
+medialink     port usb     mini hub 

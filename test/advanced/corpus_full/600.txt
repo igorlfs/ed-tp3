@@ -1,0 +1,1 @@
+delkin devices dd in cb    bit   in   cardbus adapter 

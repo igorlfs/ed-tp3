@@ -1,0 +1,1 @@
+cy  set usb     type c to sata   pin   sata to   pin micro sata adapter for           hard disk driver 

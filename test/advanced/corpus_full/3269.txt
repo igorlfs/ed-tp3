@@ -1,0 +1,1 @@
+intel core   duo processor e     frequency    ghz fsb     mhz cache  mb socket lga    cpu 

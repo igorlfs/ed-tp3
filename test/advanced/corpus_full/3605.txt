@@ -1,0 +1,1 @@
+hde  tm    pin pci fan speed controller 

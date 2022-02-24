@@ -1,0 +1,1 @@
+globalscale mw    iot starter kit powered by aws the marvell ez connect mw    iot starter kit powered by aws is the official reference design kit offering from marvell to enable smart home and home kit development  

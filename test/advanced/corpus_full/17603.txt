@@ -1,0 +1,1 @@
+network adapter  inamax usb     to rj   gigabit ethernet adapter supporting             mbps ethernet 

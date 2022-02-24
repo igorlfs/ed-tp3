@@ -1,0 +1,1 @@
+stackable     mm pitch male to female pin headers    x   pin and   x   pin for arduino and compatible development boards 

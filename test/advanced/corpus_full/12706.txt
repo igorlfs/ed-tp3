@@ -1,0 +1,1 @@
+intel     series ssdsa bw   g       gb     inch sata  solid state drive  mlc  

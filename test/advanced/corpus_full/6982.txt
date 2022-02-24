@@ -1,0 +1,1 @@
+uxcell notebook pcmcia   port ieee     a combo cardbus adapter 

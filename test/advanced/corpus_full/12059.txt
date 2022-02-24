@@ -1,0 +1,1 @@
+monitor projector    ft svga vga    pin m m vga extension cable 

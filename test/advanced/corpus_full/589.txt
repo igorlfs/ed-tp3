@@ -1,0 +1,1 @@
+gwc ae     usb to ethernet adapter the usb     to fast ethernet adapter is a high performance and highly integrated usb    bus ethernet controller with embedded  k    bit sram  the adapter supports both    mbps and     mbps ethernet function based on ieee      ieee     u lan standard  

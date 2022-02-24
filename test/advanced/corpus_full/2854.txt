@@ -1,0 +1,1 @@
+verbatim smartdisk   gb store n go usb     flash drive external password protection 

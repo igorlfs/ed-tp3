@@ -1,0 +1,1 @@
+hp scanjet     c   flatbed scanner       in x      in        dpi x      dpi   usb   parallel 

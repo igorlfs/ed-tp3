@@ -1,0 +1,1 @@
+moxa nport          port serial device server         mbps  rs      db  male    kv esd       vdc  compact serial to ethernet converter 

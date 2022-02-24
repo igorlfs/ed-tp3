@@ -1,0 +1,1 @@
+processor upgrade     x intel pentium iii     mhz   slot     l      kb 

@@ -1,0 +1,1 @@
+usb     high speed memory card reader writer for sdhc sd     sdhc sd mmc 

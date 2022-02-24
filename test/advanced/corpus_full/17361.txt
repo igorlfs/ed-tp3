@@ -1,0 +1,1 @@
+  port usb     hub plug and play  no driver installation required  pc and mac user compatible 

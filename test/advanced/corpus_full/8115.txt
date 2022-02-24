@@ -1,0 +1,1 @@
+ws gpoe at      v   w gigabit    port      at power over ethernet passive poe injector with two     watt power supplies       watts total 

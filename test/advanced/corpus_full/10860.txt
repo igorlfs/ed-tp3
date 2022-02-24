@@ -1,0 +1,1 @@
+jacobsparts   port usb     superspeed hub bus powered with per port power switches and led indicators add superspeed usb     ports to your computer with this   port hub  each port has an individual power switch and a blue led power indicator  this bus powered hub will support up to    ma of current  

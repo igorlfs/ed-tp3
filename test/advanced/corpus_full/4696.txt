@@ -1,0 +1,1 @@
+   mb   x   mb  sdram pc    non ecc unbuffered     pin    v cl   memory   x  

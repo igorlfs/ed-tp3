@@ -1,0 +1,1 @@
+digitus usb     wlan adapter  ieee       g    mbps 
